@@ -1,0 +1,14 @@
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/CMakeFiles/intrinsics_gen.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/CMakeFiles/vt_gen.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/CMakeFiles/omp_gen.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/CMakeFiles/acc_gen.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/CMakeFiles/target_parser_gen.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Core/CMakeFiles/CoreStaticLib.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Core/CMakeFiles/ul_test.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Core/CMakeFiles/edit_cache.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Core/CMakeFiles/rebuild_cache.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Language/CMakeFiles/ul.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Language/CMakeFiles/edit_cache.dir
+C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Language/CMakeFiles/rebuild_cache.dir
