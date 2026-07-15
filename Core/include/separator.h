@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-namespace utils
+namespace ul::utils
 {
 	constexpr int without_char = 0;
 	constexpr int no_char = -1;

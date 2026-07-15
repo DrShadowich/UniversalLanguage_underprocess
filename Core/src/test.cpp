@@ -2,6 +2,7 @@
 #include <iostream>
 #include <tokenizer.h>
 #include <core_exceptions.h>
+#include <llvm_value.h>
 int main()
 {
 #ifdef _DEBUG

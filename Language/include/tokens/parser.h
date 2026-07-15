@@ -3,6 +3,7 @@
 #include <token_info.h>
 #include <expression_info.h>
 #include <statement_info.h>
+#include <function_names_memory.h>
 namespace ul::parser
 {
 	constexpr uint32_t max_priority = 300000000;
@@ -10,12 +11,14 @@ namespace ul::parser
 	{
 	private:
 		lexer::language_lexer& lexer_;
+		function_names_memory function_table_;
 	public:
 		explicit language_parser(lexer::language_lexer& lexer);
 		expr::expr_node_ptr parse();
-		std::unique_ptr<stmt::block_statement> parse_program();
+		stmt::block_statement_ptr parse_program();
 	private:
-		std::unique_ptr<stmt::statement> parse_statement();
+		expr::function_definition_node_ptr parse_function();
+		stmt::statement_ptr parse_statement();
 		// Table of token priority
 		uint32_t lbp(token::token_type& tt);
 		// New definition

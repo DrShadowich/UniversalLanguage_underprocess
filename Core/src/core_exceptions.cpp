@@ -26,4 +26,9 @@ namespace ul::ex
 	{
 		message_ = std::format("While walking the AST, found error in {} -> {} on line {} with message: {}.\n", file_name_, function_name_, code_line_, message_);
 	}
+
+	void name_table_exception::native_string()
+	{
+		message_ = std::format("Table of names got error in {} -> {} on line {} with message: {}.\n", file_name_, function_name_, code_line_, message_);
+	}
 }

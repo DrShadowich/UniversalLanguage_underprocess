@@ -13,7 +13,7 @@ namespace ul::lexer
 		using tok_info_vector_rit = tok_info_vector::reverse_iterator;
 		using tok_info_vector_crit = tok_info_vector::const_reverse_iterator;
 		using tok_info_vector_cit = tok_info_vector::const_iterator;
-		utils::classes::tokenizer tokenizer_;
+		ul::utils::classes::tokenizer tokenizer_;
 		std::string input_information_;
 		tok_info_vector ready_tokens_;
 		uint32_t cursor_{ 0 };

@@ -11,12 +11,10 @@ namespace ul::dictionaries
 		{
 			// NEWLINE: Обычно обрабатывается отдельно в лексере по символу '\n', но если нужен regex:
 			token::token_type{ token::TYPE_TOKEN_TYPE::NEWLINE, "NEWLINE", "\n" },
-
 			// --- Логические операторы и сравнения (Regex с границами или просто строки) ---
 			// Так как это отдельные токены, можно использовать строки, но для надежности в потоке лучше regex с проверкой контекста.
 			// Однако, следуя вашему примеру "просто символ", используем строки, если это одиночные токены.
 			// Но ||, &&, !=, <=, >= - это последовательности символов.
-
 			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_OR_OPERATOR, "LOGICAL_OR_OPERATOR", "||" },
 			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_OR_OPERATOR, "LOGICAL_OR_OPERATOR", std::regex("\\bor\\b") },
 			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_AND_OPERATOR, "LOGICAL_AND_OPERATOR", "&&" },
@@ -34,8 +32,11 @@ namespace ul::dictionaries
 			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_LESS_OR_EQUAL_OPERATOR, "LOGICAL_LESS_OR_EQUAL_OPERATOR", "<=" },
 			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_LESS_OR_EQUAL_OPERATOR, "LOGICAL_LESS_OR_EQUAL_OPERATOR", std::regex("\\blseq\\b") },
 			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_GREATER_OR_EQUAL_OPERATOR, "LOGICAL_GREATER_OR_EQUAL_OPERATOR", ">=" },
+			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_GREATER_OR_EQUAL_OPERATOR, "LOGICAL_GREATER_OR_EQUAL_OPERATOR", std::regex("\\bgteq\\b") },
 
 			// --- Операторы и скобки (Просто символы) ---
+			token::token_type{ token::TYPE_TOKEN_TYPE::POINTER, "POINTER", std::regex("\\b->\\b") },
+			token::token_type{ token::TYPE_TOKEN_TYPE::TRIPLE_POINT, "TRIPLE_POINT", "..." },
 			token::token_type{ token::TYPE_TOKEN_TYPE::LBRACKET, "LBRACKET", "(" },
 			token::token_type{ token::TYPE_TOKEN_TYPE::RBRACKET, "RBRACKET", ")" },
 			token::token_type{ token::TYPE_TOKEN_TYPE::PLUS_OPERATOR, "PLUS_OPERATOR", "+" },
@@ -60,9 +61,9 @@ namespace ul::dictionaries
 			token::token_type{ token::TYPE_TOKEN_TYPE::FLOAT_LITERAL, "FLOAT_LITERAL", std::regex("[0-9]+\\.[0-9]*") },
 
 
-			token::token_type{ token::TYPE_TOKEN_TYPE::LOGICAL_GREATER_OR_EQUAL_OPERATOR, "LOGICAL_GREATER_OR_EQUAL_OPERATOR", std::regex("\\bgteq\\b") },
 
 			// --- Ключевые слова (Regex с \b для границ слова) ---
+			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_EXTERN, "KEYWORD_EXTERN", std::regex("\\bextern\\b") },
 			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_IF, "KEYWORD_IF", std::regex("\\bif\\b") },
 			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_ELSE, "KEYWORD_ELSE", std::regex("\\belse\\b") },
 			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_WHILE, "KEYWORD_WHILE", std::regex("\\bwhile\\b") },
@@ -102,29 +103,18 @@ namespace ul::dictionaries
 			token::token_type{ token::TYPE_TOKEN_TYPE::END_MARKER, "END_MARKER", std::regex("\\b%end\\b") },
 			token::token_type{ token::TYPE_TOKEN_TYPE::CONFIG_MARKER, "CONFIG_MARKER", std::regex("\\b%config\\b") },
 			// --- Идентификаторы (Regex, так как нужны диапазоны) ---
+			// _[a - zA - Z]
+			token::token_type{ token::TYPE_TOKEN_TYPE::UNNAMED_CLASS_TYPE, "UNNAMED_CLASS_TYPE", std::regex("_[a-zA-Z]+") },
 			// [a-zA-Z0-9_]+_fn
 			token::token_type{ token::TYPE_TOKEN_TYPE::FUNCTION_IDENTIFIER, "FUNCTION_IDENTIFIER", std::regex("[a-zA-Z0-9_]+_fn") },
 			// [a-zA-Z0-9_]+_([a-zA-Z0-9]+)
 			token::token_type{ token::TYPE_TOKEN_TYPE::VARIABLE_IDENTIFIER, "VARIABLE_IDENTIFIER", std::regex("[a-zA-Z0-9_]+_[a-zA-Z0-9]+") },
 			// [a-zA-Z] (Одиночная буква для типа класса? Или начало?)
 			// Примечание: regex "[a-zA-Z]" совпадет только с одной буквой. Если нужно слово, используйте "[a-zA-Z][a-zA-Z0-9]*"
-			token::token_type{ token::TYPE_TOKEN_TYPE::CLASS_TYPE, "CLASS_TYPE", std::regex("[a-zA-Z][a-zA-Z0-9_]*") },
+			token::token_type{ token::TYPE_TOKEN_TYPE::CLASS_TYPE, "CLASS_TYPE", std::regex("[a-zA-Z][a-zA-Z0-9_]+") },
 		};
 		// Check any lexeme with all patterns
-		template<typename StringType>
-		static token::token_type match_pattern(StringType&& lexeme)
-		{
-			bool state{ false };
-			for (auto&& tt : raw)
-			{
-				state = tt.is_pattern_regex ? std::regex_match(lexeme, *tt.regex_token_pattern) : !tt.token_pattern->compare(lexeme);
-				if (state)
-				{
-					return tt;
-				}
-			}
-			return token::token_type{ token::TYPE_TOKEN_TYPE::NO_TOKEN, "NO_TOKEN", "" };
-		}
+		static token::token_type match_pattern(const std::string& lexeme);
 	};
 
 	using type_factory_ptr = llvm::Type* (*)(llvm::LLVMContext&);
@@ -137,15 +127,50 @@ namespace ul::dictionaries
 		{ "double", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::Type::getBFloatTy(ctx); } },
 		{ "char", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::Type::getInt1Ty(ctx); } },
 		{ "bool", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::Type::getInt1Ty(ctx); } },
+		{ "str", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::PointerType::getInt8Ty(ctx)->getPointerTo(); } },
+		{ "ptr", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::PointerType::getInt8Ty(ctx)->getPointerTo(); } },
+		{ "", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::Type::getVoidTy(ctx); } }
 	};
 
 	using constant_int_factory_ptr = llvm::Value* (*)(llvm::IRBuilder<>& builder, uint64_t value);
-	static inline const std::unordered_map<std::string, constant_int_factory_ptr> ul_llvm_constant_int_table =
+	static inline const std::unordered_map<std::string, constant_int_factory_ptr> ul_string_llvm_constant_int_table =
 	{
 		{ "int16", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt16(value); } },
 		{ "int32", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt32(value); } },
 		{ "int64", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt64(value); } },
-		{ "char", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt1(value); } },
+		{ "char", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt8(value); } },
 		{ "bool", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt1(value); } }
+	};
+
+	using constant_int_factory_ptr = llvm::Value* (*)(llvm::IRBuilder<>& builder, uint64_t value);
+	static inline const std::unordered_map<uint32_t, constant_int_factory_ptr> ul_uint_llvm_constant_int_table =
+	{
+		{ 16, [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt16(value); } },
+		{ 32, [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt32(value); } },
+		{ 64, [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt64(value); } },
+		{ 8, [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt8(value); } },
+		{ 1, [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt1(value); } }
+	};
+
+	static inline const std::unordered_map<std::string, uint32_t> ul_llvm_type_to_int_table =
+	{
+		{ "int1", 1 },
+		{ "int8", 8 },
+		{ "int16", 16 },
+		{ "int32", 32 },
+		{ "int64", 64 },
+	};
+
+	static inline const std::unordered_map<std::string, uint32_t> ul_llvm_alignment_table =
+	{
+		{ "int16", 2 },
+		{ "int32", 4 },
+		{ "int64", 8 },
+		{ "char", 1 },
+		{ "bool", 1 },
+		{ "str", 8 },
+		{ "float", 4 },
+		{ "double", 8 },
+		{ "ptr", 8 },
 	};
 }

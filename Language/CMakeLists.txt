@@ -1,10 +1,3 @@
-project(ULanguage)
-
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
 set(LANGUAGE_DIR "${CMAKE_SOURCE_DIR}/Language")
 set(SRC_DIR "${LANGUAGE_DIR}/src")
 set(TOKENS_INC_DIR	"${LANGUAGE_DIR}/include/tokens")
@@ -20,6 +13,10 @@ set(SRC_FILES
 "${SRC_DIR}/generating_visitors.cpp"
 "${SRC_DIR}/code_generator.cpp"
 "${SRC_DIR}/dictionaries.cpp"
+"${SRC_DIR}/llvm_union_info.cpp"
+"${SRC_DIR}/function_names_memory.cpp"
+"${SRC_DIR}/function_name_info.cpp"
+"${SRC_DIR}/expression_info.cpp"
 )
 
 add_executable(ul ${SRC_FILES} ${TOKENS_INC_DIR} ${LLVMIR_DIR} ${TOKENS_SRC_DIR})

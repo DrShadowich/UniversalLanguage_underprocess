@@ -1,6 +1,6 @@
 #pragma once
 #include <string_view>
-namespace utils
+namespace ul::utils
 {
 	bool starts_with(char symbol, std::string_view lexeme);
 	bool end_with(char symbol, std::string_view lexeme);

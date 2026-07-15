@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/User/source/repos/UniversalLanguage/Language
+# Install script for directory: C:/Users/marti/source/repos/UniversalLanguage/Language
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/User/source/repos/UniversalLanguage/install/x64-debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/marti/source/repos/UniversalLanguage/install/x64-debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -35,6 +35,6 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "C:/Users/User/source/repos/UniversalLanguage/build/x64-debug/Language/install_local_manifest.txt"
+  file(WRITE "C:/Users/marti/source/repos/UniversalLanguage/build/x64-debug/Language/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

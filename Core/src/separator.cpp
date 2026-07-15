@@ -1,5 +1,5 @@
 #include <separator.h>
-namespace utils
+namespace ul::utils
 {
 	separator::separator(const separator& rhs) :
 		out_sep_{ rhs.out_sep_ }, keep_sep_{ rhs.keep_sep_ }

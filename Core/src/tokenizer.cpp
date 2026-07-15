@@ -1,6 +1,6 @@
 #include <tokenizer.h>
 #include <string_view>
-namespace utils::classes
+namespace ul::utils::classes
 {
 	tokenizer::tokenizer() :
 		sep_{ "" }, tokenized_{}

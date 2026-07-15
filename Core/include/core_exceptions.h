@@ -14,7 +14,7 @@
 #define CODE_GENERATOR_EXCEPTION(message)	(throw ULEX code_generator_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 #define TOKENIZER_EXCEPTION(message)		(throw ULEX tokenizer_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 #define VISITOR_EXCEPTION(message)			(throw ULEX visitor_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
-
+#define NAMES_EXCEPTION(message)			(throw ULEX name_table_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 
 namespace ul::ex
 {
@@ -70,6 +70,14 @@ namespace ul::ex
 	};
 
 	class tokenizer_exception final : public ULEX exception
+	{
+	public:
+		using ULEX exception::exception;
+	protected:
+		virtual void native_string() override;
+	};
+
+	class name_table_exception final : public ULEX exception
 	{
 	public:
 		using ULEX exception::exception;

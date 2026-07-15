@@ -3,7 +3,7 @@
 #include <commentaries.h>
 #include <core_exceptions.h>
 #include <vector>
-namespace utils::classes
+namespace ul::utils::classes
 {
 	class tokenizer
 	{

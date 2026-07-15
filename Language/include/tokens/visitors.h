@@ -5,6 +5,9 @@
 #include <statement_info.h>
 #include <format>
 #include <core_exceptions.h>
+#include <visitors.h>
+#include <simple_variable.h>
+#if 0
 struct visitor
 {
 	virtual ~visitor() = default;
@@ -22,7 +25,26 @@ struct output_visitor : public visitor
 	virtual std::string visit(NodeType&) = 0;
 };
 
-
+struct expr_type_visitor : public visitor
+{
+	static std::string get_type(ul::expr::expr_node& exp)
+	{
+		if (auto* n = dynamic_cast<ul::expr::string_literal_node*>(&exp))
+		{
+			return "str";
+		}
+		else if (auto* n = dynamic_cast<ul::expr::number_literal_node*>(&exp))
+		{
+			return "int64";
+		}
+		else if (auto* n = dynamic_cast<ul::expr::variable_node*>(&exp))
+		{
+			return ul::utils::get_type_from_name(n->name);;
+		}
+		else
+			return "";
+	}
+};
 
 struct expr_output_visitor : public output_visitor<ul::expr::expr_node>
 {
@@ -41,7 +63,7 @@ struct expr_output_visitor : public output_visitor<ul::expr::expr_node>
 		{
 			return std::format("({})", n->lexeme);
 		}
-		else if (auto* n = dynamic_cast<string_litral_node*>(&ep))
+		else if (auto* n = dynamic_cast<string_literal_node*>(&ep))
 		{
 			return std::format("{}", n->lexeme);
 		}
@@ -111,3 +133,5 @@ struct stmt_output_visitor : public output_visitor<ul::stmt::statement>
 		VISITOR_EXCEPTION("Unhandled statement node type in statement output visitor");
 	}
 };
+
+#endif

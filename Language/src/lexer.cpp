@@ -7,11 +7,22 @@ namespace ul::lexer
 		token::token_type tt{};
 		if (input_information_.empty()) return;
 		this->tokenizer_.tokenize(input_information_);
+		ready_tokens_.clear();
 		for(auto&& lexeme : tokenizer_)
 		{
 			if (lexeme.empty()) continue;
 			tt = dictionaries::language_dictionary::match_pattern(lexeme);
+			if (tt == token::TYPE_TOKEN_TYPE::NEWLINE)
+				continue;
 			this->ready_tokens_.emplace_back(lexeme, tt);
+			if(ready_tokens_[ready_tokens_.size() - 1] == ready_tokens_[ready_tokens_.size() - 2] && ready_tokens_[ready_tokens_.size() - 2] == ready_tokens_[ready_tokens_.size() - 3])
+			{
+				if ((ready_tokens_.end() - 1)->type.enum_type == token::TYPE_TOKEN_TYPE::POINT)
+				{
+					ready_tokens_.erase((ready_tokens_.end() - 3), ready_tokens_.end());
+					ready_tokens_.emplace_back("...", dictionaries::language_dictionary::match_pattern("..."));
+				}
+			}
 		}
 	}
 

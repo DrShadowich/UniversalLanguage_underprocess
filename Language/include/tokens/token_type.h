@@ -15,6 +15,10 @@ namespace ul::token
 		VARIABLE_IDENTIFIER,
 		// [a-zA-Z]
 		CLASS_TYPE,
+		// _[a-zA-Z]
+		UNNAMED_CLASS_TYPE,
+		// ...
+		TRIPLE_POINT,
 		// (
 		LBRACKET,
 		// )
@@ -81,6 +85,8 @@ namespace ul::token
 		KEYWORD_CONSTEXPR,
 		// out
 		KEYWORD_MUT_OUTPUT,
+		// extern
+		KEYWORD_EXTERN,
 		// || (or)
 		LOGICAL_OR_OPERATOR,
 		// && (and)
@@ -127,6 +133,8 @@ namespace ul::token
 		CONFIG_MARKER,
 		// %([\s\S]*?)%
 		MARKER_EXPRESSION,
+		// ->
+		POINTER,
 		END,
 	};
 	

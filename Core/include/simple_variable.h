@@ -2,14 +2,13 @@
 #include <string>
 #include <string_view>
 #include <core_exceptions.h>
-namespace utils
+namespace ul::utils
 {
-	std::string get_type_from_name(std::string_view name)
+	namespace detail
 	{
-		size_t type_pos = name.find_last_of('_');
-		if (type_pos == std::string::npos)
-			EXCEPTION(std::format("No any type in {}", name));
-		std::string type_str = std::move(static_cast<std::string>(name.substr(type_pos + 1)));
-		return type_str;
+		size_t get_type_and_name_delimeter(std::string_view name);
 	}
+	bool has_type(std::string_view name);
+	std::string get_type_from_name(std::string_view name);
+	std::string get_name_without_type(std::string_view name);
 }

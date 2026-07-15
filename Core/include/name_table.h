@@ -1,28 +1,52 @@
 #pragma once
 #include <unordered_map>
 #include <string>
-#include <set>
-#include <ranges>
-#include <algorithm>
+#include <llvm_value.h>
+#include <core_exceptions.h>
 
-namespace utils
+namespace ul::utils
 {
-	struct name_table
+
+
+	class name_table final
 	{
 	private:
-		uint32_t depth_;
-		std::unordered_map<std::string, uint32_t> name_map_;
+		using map_value = std::pair<llvm::Value*, uint32_t>;
+		using map_type = std::pair<llvm::Type*, uint32_t>;
+		using map_function = std::pair<llvm::Function*, uint32_t>;
+		using map_functiontype = std::pair<llvm::FunctionType*, uint32_t>;
+		std::unordered_map<std::string, map_value> map_value_{};
+		std::unordered_map<std::string, map_type> map_type_{};
+		std::unordered_map<std::string, map_function> map_function_{};
+		std::unordered_map<std::string, map_functiontype> map_function_type_{};
+
+		uint32_t cur_depth_{};
+	
+
 	public:
-		void update_namespace(uint32_t depth)
-		{
-			depth_ = depth;
-			for(auto&& it = name_map_.begin(); it != name_map_.end();)
-			{
-				if (it->second > depth_)
-					it = name_map_.erase(it);
-				else
-					++it;
-			}
-		}
+		~name_table();
+		name_table();
+		name_table(const name_table&) = delete;
+		name_table(name_table&&) = delete;
+		name_table& operator=(const name_table&) = delete;
+		name_table& operator=(name_table&&) = delete;
+		
+		void insert(const std::string& var_name, llvm::Value* value);
+		void insert(const std::string& type_name, llvm::Type* type);
+		void insert(const std::string& func_name, llvm::Function* function);
+
+		bool contains_variable(const std::string& name);
+		bool contains_type(const std::string& name);
+		bool contains_function(const std::string& name);
+		
+		llvm::Value* get_variable(const std::string& name);
+		llvm::Type* get_type(const std::string& name);
+		llvm::Function* get_function(const std::string& name);
+
+
+		void update_namespace(uint32_t new_depth);
+		
+		void operator++();
+		void operator--();
 	};
 }

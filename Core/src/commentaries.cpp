@@ -1,5 +1,5 @@
 #include <commentaries.h>
-namespace utils
+namespace ul::utils
 {
 	bool starts_with(char symbol, std::string_view lexeme)
 	{
