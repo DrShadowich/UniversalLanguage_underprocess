@@ -1,4 +1,5 @@
 #include <function_name_info.h>
+#include <expression_info.h>
 #include <format>
 #include <core_exceptions.h>
 
@@ -54,7 +55,7 @@ namespace ul::parser
 			fn_types.push_back(type);
 			fn_def.function->name->full_name += std::move(std::format("|{}", std::move(type)));
 		}
-		if(fn_def.va_args)
+		if(fn_def.parameters->va_args)
 		{
 			fn_def.function->name->full_name += "|...!";
 			fn_types.emplace_back("...");

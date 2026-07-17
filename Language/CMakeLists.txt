@@ -17,6 +17,9 @@ set(SRC_FILES
 "${SRC_DIR}/function_names_memory.cpp"
 "${SRC_DIR}/function_name_info.cpp"
 "${SRC_DIR}/expression_info.cpp"
+"${SRC_DIR}/statement_info.cpp"
+"${TOKENS_INC_DIR}/stmt_expr_cast.h"
+"${SRC_DIR}/stmt_expr_cast.cpp"
 )
 
 add_executable(ul ${SRC_FILES} ${TOKENS_INC_DIR} ${LLVMIR_DIR} ${TOKENS_SRC_DIR})

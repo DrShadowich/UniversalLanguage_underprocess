@@ -5,7 +5,7 @@
 #include <parser.h>
 #include <code_generator.h>
 #include <function_names_memory.h>
-void writeModuleToLL(llvm::Module& M, llvm::StringRef Path)
+static void writeModuleToLL(llvm::Module& M, llvm::StringRef Path)
 {
 	std::error_code EC;
 	llvm::raw_fd_ostream OS(Path, EC);

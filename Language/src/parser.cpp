@@ -1,6 +1,6 @@
 #include <parser.h>
 #include <expression_info.h>
-#include <visitors.h>
+#include <stmt_expr_cast.h>
 
 namespace ul::parser
 {
@@ -48,15 +48,11 @@ namespace ul::parser
 		}
 	}
 
-	expr::function_definition_node_ptr language_parser::parse_function()
+	expr::function_parameters_node_ptr language_parser::parse_parameters()
 	{
-		std::string function_name = lexer_.front()->lexeme;
-		auto&& function_ = std::make_unique<expr::function_node>(std::move(function_name));
-		lexer_.next();
 		if (lexer_.expect(token::TYPE_TOKEN_TYPE::LBRACKET))
 		{
 			lexer_.next();
-			bool va_args = false;
 			auto params = std::make_unique<expr::function_parameters_node>();
 			while (lexer_.not_expect(token::TYPE_TOKEN_TYPE::RBRACKET))
 			{
@@ -64,19 +60,19 @@ namespace ul::parser
 					PARSER_EXCEPTION("Unexpected EOF in parameter list");
 				auto&& future_param = nud(*lexer_.front());
 				lexer_.next();
-				if (auto* _ = dynamic_cast<expr::variable_node*>(future_param.get()))
+				if (ul::dyn_cast<expr::variable_node>(future_param.get()))
 				{
 					expr::type_variable_node_ptr type =
-						std::make_unique<expr::type_variable_node>((expr::variable_node*)future_param.release());
+						std::make_unique<expr::type_variable_node>(ul::dyn_cast<expr::variable_node>(future_param.release()));
 					std::string type_name = type->name;
-					params->types.push_back(std::move(type));
+					params->types.emplace_back(std::move(type));
 					params->names.emplace_back(std::move(type_name));
 				}
-				else if (auto* b = dynamic_cast<expr::function_with_va_args_node*>(future_param.get()))
+				if (auto* b = ul::dyn_cast<expr::function_with_va_args_node>(future_param.get()))
 				{
-					if (va_args)
+					if (params->va_args)
 						PARSER_EXCEPTION("Va args already defined");
-					else va_args = true;
+					else params->va_args = true;
 				}
 				if (lexer_.expect(token::TYPE_TOKEN_TYPE::COMMA))
 					lexer_.next();
@@ -86,101 +82,48 @@ namespace ul::parser
 				PARSER_EXCEPTION("Expected \')\' to close parameters list");
 			}
 			lexer_.next();
-			auto&& function_with_params =
-				std::make_unique<expr::function_definition_node>(std::move(function_), std::move(params));
-			function_with_params->function_type = std::make_unique<expr::type_node>("");
-			function_with_params->va_args = va_args;
-			return function_with_params;
+			return params;
 		}
-		else PARSER_EXCEPTION("Expected \'(\' to open parameters list");
+		else
+			PARSER_EXCEPTION("Expected \'(\'");
 	}
 
-	stmt::statement_ptr language_parser::parse_statement()
+	expr::function_definition_node_ptr language_parser::parse_function_definition_node()
 	{
-		// extern function_name(params) -> _type; || extern function_name(params);
-		if (lexer_.expect(token::TYPE_TOKEN_TYPE::KEYWORD_EXTERN))
-		{
-			lexer_.next();
-			if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::FUNCTION_IDENTIFIER))
-				PARSER_EXCEPTION("Expected function identifier after keyword extern");
-			auto&& function_definition = parse_function();
-			function_definition->function->is_extern = true;
-			if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
-			{
-				lexer_.next();
-				// inserting function
-				function_table_.insert_function(*function_definition);
-				return std::make_unique<stmt::extern_function_declaration>(std::move(function_definition));
-			}
-			else if (lexer_.expect(token::TYPE_TOKEN_TYPE::POINTER))
-			{
-				lexer_.next();
-				if (lexer_.expect(token::TYPE_TOKEN_TYPE::UNNAMED_CLASS_TYPE))
-				{
-					std::string type = std::move(utils::get_type_from_name(lexer_.front()->lexeme));
-					function_definition->function_type = std::make_unique<expr::type_node>(std::move(type));
-					lexer_.next();
-					// inserting function
-					function_table_.insert_function(*function_definition);
-				}
-				else
-					PARSER_EXCEPTION("Expected unnamed class type. Samples: _int64, _str, _bool");
-			}
-			else if (lexer_.expect(token::TYPE_TOKEN_TYPE::FLBRACKET))
-				PARSER_EXCEPTION("Definition of extern function doesn\'t exsist");
-			else
-				PARSER_EXCEPTION("Unexpected token after declaration");
-		}
+		std::string function_name = lexer_.front()->lexeme;
+		auto&& fn = std::make_unique<expr::function_node>(std::move(function_name));
+		lexer_.next();
+		auto&& params = parse_parameters();
+		auto&& function_with_params =
+			std::make_unique<expr::function_definition_node>(std::move(fn), std::move(params));
+		function_with_params->function_type = std::make_unique<expr::type_node>("");
+		return function_with_params;
+	}
 
-		// { ... }
-		else if (lexer_.expect(token::TYPE_TOKEN_TYPE::FLBRACKET))
-		{
-			lexer_.next();
-			auto block = std::make_unique<stmt::block_statement>();
-			while (lexer_.not_expect(token::TYPE_TOKEN_TYPE::FRBRACKET) &&
-				lexer_.not_expect(token::TYPE_TOKEN_TYPE::END))
-			{
-				block->statements.emplace_back(parse_statement());
-				if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON)) { lexer_.next(); }
-			}
-			if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::FRBRACKET))
-			{
-				PARSER_EXCEPTION("Expected \'}\' to close block");
-			}
-			lexer_.next();
-			return block;
-		}
-
-		// Везде, где есть функции переписать и отрефакторить код.
-		// Сделать для парсера таблицу функций.
-		// Если функция уже была, то путь так.
-		// Если функции нет, то путь то этак.
-
-
-		// function_name (params) || function_name(args) || function_name (params) { ... } 
-		else if (lexer_.expect(token::TYPE_TOKEN_TYPE::FUNCTION_IDENTIFIER))
+	stmt::statement_ptr language_parser::parse_function_definition()
+	{
+		if (lexer_.expect(token::TYPE_TOKEN_TYPE::FUNCTION_IDENTIFIER))
 		{
 			expr::function_definition_node_ptr function_definition{ nullptr };
 			// function_name(args);
 			if (function_table_.contains_name(lexer_.front()->lexeme))
 			{
 				expr::expr_node_ptr function_call = expression(0);
-				return std::make_unique<stmt::expression_statement>(std::move(function_call));
+				return dyn_cast(std::move(function_call));
 			}
 			// function_name(params)
 			else
-				function_definition = parse_function();
-			
+				function_definition = parse_function_definition_node();
+
 			// function_name(params);
 			if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
 				PARSER_EXCEPTION("UL doesn\'t support forward-declaration");
-			
+
 			// function_name(params){ ... }
 			else if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::FLBRACKET))
 			{
 				if (lexer_.expect(token::TYPE_TOKEN_TYPE::END))
 					PARSER_EXCEPTION("Expected \'{\' after function definition");
-				lexer_.next();
 			}
 			else if (lexer_.expect(token::TYPE_TOKEN_TYPE::FLBRACKET))
 			{
@@ -217,6 +160,111 @@ namespace ul::parser
 			else
 				PARSER_EXCEPTION("Expecting definition after function name with arguments");
 		}
+		else
+			PARSER_EXCEPTION("Expected function identifier");
+	}
+
+	stmt::extern_function_declaration_ptr language_parser::parse_extern_function()
+	{
+		if (lexer_.expect(token::TYPE_TOKEN_TYPE::KEYWORD_EXTERN))
+		{
+			lexer_.next();
+			if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::FUNCTION_IDENTIFIER))
+				PARSER_EXCEPTION("Expected function identifier after keyword extern");
+			auto&& function_definition = parse_function_definition_node();
+			function_definition->function->is_extern = true;
+			if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
+			{
+				lexer_.next();
+				// inserting function
+				function_table_.insert_function(*function_definition);
+				return std::make_unique<stmt::extern_function_declaration>(std::move(function_definition));
+			}
+			else if (lexer_.expect(token::TYPE_TOKEN_TYPE::POINTER))
+			{
+				lexer_.next();
+				if (lexer_.expect(token::TYPE_TOKEN_TYPE::UNNAMED_CLASS_TYPE))
+				{
+					std::string type = std::move(utils::get_type_from_name(lexer_.front()->lexeme));
+					function_definition->function_type = std::make_unique<expr::type_node>(std::move(type));
+					lexer_.next();
+					// inserting function
+					function_table_.insert_function(*function_definition);
+					if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
+					{
+						lexer_.next();
+						return std::make_unique<stmt::extern_function_declaration>(std::move(function_definition));
+					}
+					else
+						PARSER_EXCEPTION("Expected semicolon after unnamed type in extern function");
+				}
+				else
+					PARSER_EXCEPTION("Expected unnamed class type. Samples: _int64, _str, _bool");
+			}
+			else if (lexer_.expect(token::TYPE_TOKEN_TYPE::FLBRACKET))
+				PARSER_EXCEPTION("Definition of extern function doesn\'t exsist");
+			else
+				PARSER_EXCEPTION("Unexpected token after declaration");
+		}
+		else
+			PARSER_EXCEPTION("Expected keyword extern");
+	}
+
+	stmt::assignment_statement_ptr language_parser::parse_assignment(std::string variable_name)
+	{
+		if (lexer_.expect(token::TYPE_TOKEN_TYPE::ASSIGNMENT_OPERATOR))
+		{
+			lexer_.next();
+			auto&& value_expr = expression(0);
+			if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
+			{
+				lexer_.next();
+				return std::make_unique<stmt::assignment_statement>(std::move(variable_name), std::move(value_expr));
+			}
+			else
+				PARSER_EXCEPTION("Expected \';\' after assignment statement");
+		}
+		else
+			PARSER_EXCEPTION("Expected assignment operator");
+	}
+
+	stmt::block_statement_ptr language_parser::parse_block_statement()
+	{
+		if (lexer_.expect(token::TYPE_TOKEN_TYPE::FLBRACKET))
+		{
+			lexer_.next();
+			auto block = std::make_unique<stmt::block_statement>();
+			while (lexer_.not_expect(token::TYPE_TOKEN_TYPE::FRBRACKET) &&
+				lexer_.not_expect(token::TYPE_TOKEN_TYPE::END))
+			{
+				block->statements.emplace_back(parse_statement());
+				if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON)) { lexer_.next(); }
+			}
+			if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::FRBRACKET))
+				PARSER_EXCEPTION("Expected \'}\' to close block");
+			lexer_.next();
+			return block;
+		}
+		else
+			PARSER_EXCEPTION("Expected left bracket for block statement");
+	}
+
+	stmt::statement_ptr language_parser::parse_statement()
+	{
+		// extern function_name(params) -> _type; || extern function_name(params);
+		if (lexer_.expect(token::TYPE_TOKEN_TYPE::KEYWORD_EXTERN))
+			return parse_extern_function();
+
+		// { ... }
+		else if (lexer_.expect(token::TYPE_TOKEN_TYPE::FLBRACKET))
+			return parse_block_statement();
+
+
+		// function_name (params) || function_name(args) || function_name (params) { ... } 
+		else if (lexer_.expect(token::TYPE_TOKEN_TYPE::FUNCTION_IDENTIFIER))
+		{
+			return parse_function_definition();
+		}
 		// Bad
 		// name_type = expr; || name_type.something;
 		else if (lexer_.expect(token::TYPE_TOKEN_TYPE::VARIABLE_IDENTIFIER))
@@ -226,17 +274,7 @@ namespace ul::parser
 			lexer_.next();
 			// name_type = expr;
 			if (lexer_.expect(token::TYPE_TOKEN_TYPE::ASSIGNMENT_OPERATOR))
-			{
-				lexer_.next();
-				auto&& value_expr = expression(0);
-				if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
-				{
-					lexer_.next();
-					return std::make_unique<stmt::assignment_statement>(std::move(var_name), std::move(value_expr));
-				}
-				else
-					PARSER_EXCEPTION("Expected \';\' after assignment statement");
-			}
+				return parse_assignment(std::move(var_name));
 			// name_type;
 			else if (lexer_.expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
 			{
@@ -245,24 +283,22 @@ namespace ul::parser
 			}
 			// name_type...;
 			else if (lexer_.expect(token::TYPE_TOKEN_TYPE::POINT))
-			{
 				return std::make_unique<stmt::expression_statement>(std::move(parse_field_call(std::move(parent))));
-			}
 			else
 				PARSER_EXCEPTION("Variable has no purpose");
 		}
-		// other
+		// expressions
 		else if (is_expression_start(lexer_.front()->type))
-		{
-			auto expr = expression(0);
-			return std::make_unique<stmt::expression_statement>(std::move(expr));
-		}
-		else PARSER_EXCEPTION(std::format("Unexpected token {} starting statement", lexer_.front()->lexeme));
+			return std::make_unique<stmt::expression_statement>(expression(0));
+		else 
+			PARSER_EXCEPTION(std::format("Unexpected token {} starting statement", lexer_.front()->lexeme));
 	}
 
 	expr::field_call_node_ptr language_parser::parse_field_call(expr::expr_node_ptr parent)
 	{
 		expr::field_call_node_ptr field{ nullptr };
+// Переделать
+#if 0
 		while (lexer_.expect(token::TYPE_TOKEN_TYPE::POINT))
 		{
 			lexer_.next();
@@ -277,8 +313,50 @@ namespace ul::parser
 
 			field = field ? std::make_unique<expr::field_call_node>(std::move(parent), std::move(field_n), std::move(field)) :
 				std::make_unique<expr::field_call_node>(std::move(parent), std::move(field_n));
+			parent = std::move(field);
 		}
+#endif
 		return field;
+	}
+
+	expr::function_arguments_node_ptr language_parser::parse_arguments()
+	{
+		if (lexer_.expect(token::TYPE_TOKEN_TYPE::LBRACKET))
+		{
+			lexer_.next();
+			auto&& args = std::make_unique<expr::function_arguments_node>();
+			while (lexer_.not_expect(token::TYPE_TOKEN_TYPE::RBRACKET))
+			{
+				if (lexer_.expect(token::TYPE_TOKEN_TYPE::END))
+					PARSER_EXCEPTION("Unexpected EOF in argument list");
+				args->args.emplace_back(std::move(expr::make_argument(expression(0))));
+				if (lexer_.expect(token::TYPE_TOKEN_TYPE::COMMA))
+					lexer_.next();
+			}
+			if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::RBRACKET))
+			{
+				PARSER_EXCEPTION("Expected \')\' to close argument list");
+			}
+			lexer_.next();
+			return args;
+		}
+		else
+			PARSER_EXCEPTION("Expected left bracket for arguments");
+	}
+
+	expr::function_call_node_ptr language_parser::get_function_call_node(expr::function_node_ptr fn_node, expr::function_arguments_node_ptr args)
+	{
+		if (function_table_.contains_name(fn_node->name->short_name))
+		{
+			fn_node->is_extern = function_table_.name_is_extern(fn_node->name->short_name);
+			auto fn_type =
+				std::make_unique<expr::type_node>(std::move(function_table_.get_return_type_of_function(fn_node->name->short_name)));
+			auto&& fn_call_ptr = std::make_unique<expr::function_call_node>(std::move(fn_node), std::move(args), std::move(fn_type));
+			function_name_info::make_full_name_from_call(*fn_call_ptr);
+			return fn_call_ptr;
+		}
+		else
+			PARSER_EXCEPTION(std::format("There is no function named {}", fn_node->name->short_name));
 	}
 
 	stmt::block_statement_ptr language_parser::parse_program()
@@ -286,7 +364,7 @@ namespace ul::parser
 		auto&& program = std::make_unique<stmt::block_statement>();
 		while (lexer_.not_expect(token::TYPE_TOKEN_TYPE::END))
 		{
-			program->statements.push_back(parse_statement());
+			program->statements.emplace_back(parse_statement());
 		}
 		return program;
 	}
@@ -325,16 +403,14 @@ namespace ul::parser
 			break;
 		case TYPE_TOKEN_TYPE::KEYWORD_RETURN:
 		{
-			auto inner = expression(0);
-			std::string return_type = expr::get_type_of_expression(*inner);
+			auto return_block = expression(0);
+			std::string return_type = expr::get_type_of_expression(*return_block);
 			if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::SEMICOLON))
-			{
 				PARSER_EXCEPTION("Expected \';\' after return");
-			}
 			lexer_.next();
 			left = return_type.empty() ?
-				std::make_unique<expr::return_value_node>(std::move(inner)) :
-				std::make_unique<expr::return_value_node>(std::move(inner), std::move(return_type));
+				std::make_unique<expr::return_value_node>(std::move(return_block)) :
+				std::make_unique<expr::return_value_node>(std::move(return_block), std::move(return_type));
 			break;
 		}
 		case TYPE_TOKEN_TYPE::LBRACKET:
@@ -349,44 +425,29 @@ namespace ul::parser
 			left = std::move(inner);
 			break;
 		}
+		case TYPE_TOKEN_TYPE::KEYWORD_REF:
+		{
+			if (lexer_.expect(TYPE_TOKEN_TYPE::VARIABLE_IDENTIFIER))
+			{
+				auto&& var = std::make_unique<expr::variable_node>(lexer_.front()->lexeme);
+				left = std::make_unique<expr::variable_reference_node>(std::move(var));
+				lexer_.next();
+			}
+			else
+				PARSER_EXCEPTION("Expected variable after keyword \"ref\"");
+			break;
+			
+		}
 		case TYPE_TOKEN_TYPE::VARIABLE_IDENTIFIER:
 			left = std::make_unique<expr::variable_node>(ti.lexeme);
 			break;
 		case TYPE_TOKEN_TYPE::FUNCTION_IDENTIFIER:
 		{
-			expr::function_node_ptr function_ = std::make_unique<expr::function_node>(ti.lexeme);
+			expr::function_node_ptr fn_node = std::make_unique<expr::function_node>(ti.lexeme);
 			if (lexer_.expect(token::TYPE_TOKEN_TYPE::LBRACKET))
-			{
-				lexer_.next();
-				auto&& args = std::make_unique<expr::function_arguments_node>();
-				while (lexer_.not_expect(token::TYPE_TOKEN_TYPE::RBRACKET))
-				{
-					if (lexer_.expect(token::TYPE_TOKEN_TYPE::END))
-						PARSER_EXCEPTION("Unexpected EOF in argument list");
-					args->args.emplace_back(std::move(expr::make_argument(expression(0))));
-					if (lexer_.expect(token::TYPE_TOKEN_TYPE::COMMA))
-						lexer_.next();
-				}
-				if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::RBRACKET))
-				{
-					PARSER_EXCEPTION("Expected \')\' to close argument list");
-				}
-				lexer_.next();
-				
-				if (function_table_.contains_name(function_->name->short_name))
-				{
-					function_->is_extern = function_table_.name_is_extern(function_->name->short_name);
-					auto fn_type = 
-						std::make_unique<expr::type_node>(std::move(function_table_.get_return_type_of_function(function_->name->short_name)));
-					left = std::make_unique<expr::function_call_node>(std::move(function_), std::move(args), std::move(fn_type));
-					auto& n = dynamic_cast<expr::function_call_node&>(*left.get());
-					function_name_info::make_full_name_from_call(n);
-				}
-				else
-					PARSER_EXCEPTION(std::format("There is no function named {}", function_->name->short_name));
-			}
+				left = get_function_call_node(std::move(fn_node), parse_arguments());
 			else
-				left = std::move(function_);
+				left = std::move(fn_node);
 			break;
 		}
 		case TYPE_TOKEN_TYPE::MARKER_EXPRESSION:
@@ -395,7 +456,7 @@ namespace ul::parser
 		default:
 			PARSER_EXCEPTION("Unexpected token");
 		}
-
+#if 0
 		for (;;)
 		{
 			if (lexer_.not_expect(token::TYPE_TOKEN_TYPE::POINT))
@@ -411,6 +472,7 @@ namespace ul::parser
 			lexer_.next();
 			left = std::make_unique<expr::field_call_node>(std::move(left), std::move(field_n));
 		}
+#endif
 		return left;
 	}
 	expr::expr_node_ptr language_parser::led(token::token_info& ti, expr::expr_node_ptr left)
@@ -439,15 +501,5 @@ namespace ul::parser
 			left = led(*cur2, std::move(left));
 		}
 		return left;
-	}
-	// Parse statement
-	expr::expr_node_ptr language_parser::parse()
-	{
-		auto node = expression(0);
-		if (!lexer_.is_end_symbol())
-		{
-			PARSER_EXCEPTION("Unexpected token after expression");
-		}
-		return node;
 	}
 }

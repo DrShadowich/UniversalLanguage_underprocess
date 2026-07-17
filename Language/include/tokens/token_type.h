@@ -77,6 +77,8 @@ namespace ul::token
 		KEYWORD_CLASS,
 		// immut
 		KEYWORD_IMMUT,
+		// ref
+		KEYWORD_REF,
 		// const
 		KEYWORD_CONST,
 		// global

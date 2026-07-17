@@ -1,0 +1,2147 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVM-C::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVM-C-Debug-a1b2b82414b28fc067e9.json",
+					"name" : "LLVM-C",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAArch64AsmParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAArch64AsmParser-Debug-d9c88b4a91e1e18a1b8b.json",
+					"name" : "LLVMAArch64AsmParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAArch64CodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAArch64CodeGen-Debug-8d4294e677b60c4a427a.json",
+					"name" : "LLVMAArch64CodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAArch64Desc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAArch64Desc-Debug-f692ed2ad93ac5ae59f9.json",
+					"name" : "LLVMAArch64Desc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAArch64Disassembler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAArch64Disassembler-Debug-d4aa2a0a6b8fb1cef965.json",
+					"name" : "LLVMAArch64Disassembler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAArch64Info::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAArch64Info-Debug-ec7fc85b703321f82b1a.json",
+					"name" : "LLVMAArch64Info",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAArch64Utils::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAArch64Utils-Debug-18ecbf62f1a452669e16.json",
+					"name" : "LLVMAArch64Utils",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMABI::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMABI-Debug-f21d281409ea972d4bda.json",
+					"name" : "LLVMABI",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMARMAsmParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMARMAsmParser-Debug-34406ef93c8376330d59.json",
+					"name" : "LLVMARMAsmParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMARMCodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMARMCodeGen-Debug-51f4d92be4a6fef0f545.json",
+					"name" : "LLVMARMCodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMARMDesc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMARMDesc-Debug-e63194c6074b6f90a5d8.json",
+					"name" : "LLVMARMDesc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMARMDisassembler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMARMDisassembler-Debug-d5ebacf20d30f4a1d55a.json",
+					"name" : "LLVMARMDisassembler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMARMInfo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMARMInfo-Debug-04262367edb73d4c2822.json",
+					"name" : "LLVMARMInfo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMARMUtils::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMARMUtils-Debug-e56b6044686c083a246b.json",
+					"name" : "LLVMARMUtils",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAggressiveInstCombine::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAggressiveInstCombine-Debug-43dff8a7af72f8eb4036.json",
+					"name" : "LLVMAggressiveInstCombine",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAnalysis::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAnalysis-Debug-8fa5e0a6b0d3147c95fa.json",
+					"name" : "LLVMAnalysis",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAsmParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAsmParser-Debug-b93732e430d20658630a.json",
+					"name" : "LLVMAsmParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMAsmPrinter::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMAsmPrinter-Debug-28d913799ef32ef68772.json",
+					"name" : "LLVMAsmPrinter",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBPFAsmParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBPFAsmParser-Debug-465fe59de9658c7ec870.json",
+					"name" : "LLVMBPFAsmParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBPFCodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBPFCodeGen-Debug-5e5440ac3735556bc585.json",
+					"name" : "LLVMBPFCodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBPFDesc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBPFDesc-Debug-9141d9fe2b0aaf79b8df.json",
+					"name" : "LLVMBPFDesc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBPFDisassembler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBPFDisassembler-Debug-d219d9668205dde5217e.json",
+					"name" : "LLVMBPFDisassembler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBPFInfo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBPFInfo-Debug-c986d4fdeaa9e767b0c0.json",
+					"name" : "LLVMBPFInfo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBinaryFormat::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBinaryFormat-Debug-e05c9e8e92b9a05a504a.json",
+					"name" : "LLVMBinaryFormat",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBitReader::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBitReader-Debug-08c7866df283b0eba3b6.json",
+					"name" : "LLVMBitReader",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBitWriter::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBitWriter-Debug-6aaef29baed32c553a79.json",
+					"name" : "LLVMBitWriter",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMBitstreamReader::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMBitstreamReader-Debug-41fd3be0eff7fad08d6b.json",
+					"name" : "LLVMBitstreamReader",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCAS::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCAS-Debug-d9dead1bb8483972ddca.json",
+					"name" : "LLVMCAS",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCFGuard::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCFGuard-Debug-2350c117846984e9ecba.json",
+					"name" : "LLVMCFGuard",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCFIVerify::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCFIVerify-Debug-2c55685ee72b140edaa2.json",
+					"name" : "LLVMCFIVerify",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCGData::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCGData-Debug-3298e194e3a5e3f549c9.json",
+					"name" : "LLVMCGData",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCodeGen-Debug-846f8e6f7072d2e6895a.json",
+					"name" : "LLVMCodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCodeGenTypes::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCodeGenTypes-Debug-859ad30dac3f25db671b.json",
+					"name" : "LLVMCodeGenTypes",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCore::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCore-Debug-ec8189d43beb3a3a027c.json",
+					"name" : "LLVMCore",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCoroutines::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCoroutines-Debug-caacdb99d49ac7ba23cf.json",
+					"name" : "LLVMCoroutines",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMCoverage::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMCoverage-Debug-b29a0ce4aeaf57f61879.json",
+					"name" : "LLVMCoverage",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDTLTO::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDTLTO-Debug-6fbcfc00e4f26d05abef.json",
+					"name" : "LLVMDTLTO",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDWARFCFIChecker::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDWARFCFIChecker-Debug-b413ab5a5368232e61a2.json",
+					"name" : "LLVMDWARFCFIChecker",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDWARFLinker::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDWARFLinker-Debug-126da54ea2567e4e391f.json",
+					"name" : "LLVMDWARFLinker",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDWARFLinkerClassic::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDWARFLinkerClassic-Debug-889dd8856fc675ed67e5.json",
+					"name" : "LLVMDWARFLinkerClassic",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDWARFLinkerParallel::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDWARFLinkerParallel-Debug-6f486468d427c9ad9a7b.json",
+					"name" : "LLVMDWARFLinkerParallel",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDWP::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDWP-Debug-c6c40f5e0a74e1f1b0b7.json",
+					"name" : "LLVMDWP",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoBTF::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoBTF-Debug-19a6ee3420eb3a21da73.json",
+					"name" : "LLVMDebugInfoBTF",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoCodeView::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoCodeView-Debug-8775c9b8126bbc0d86e7.json",
+					"name" : "LLVMDebugInfoCodeView",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoDWARF::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoDWARF-Debug-91ff0aa221d62d21d26c.json",
+					"name" : "LLVMDebugInfoDWARF",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoDWARFLowLevel::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoDWARFLowLevel-Debug-ba2a51274d055d5049db.json",
+					"name" : "LLVMDebugInfoDWARFLowLevel",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoGSYM::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoGSYM-Debug-5ff0f935c1079aef045e.json",
+					"name" : "LLVMDebugInfoGSYM",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoLogicalView::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoLogicalView-Debug-c8d3f4028ad213b7f560.json",
+					"name" : "LLVMDebugInfoLogicalView",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoMSF::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoMSF-Debug-268fba135e6cd12a7ac8.json",
+					"name" : "LLVMDebugInfoMSF",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebugInfoPDB::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebugInfoPDB-Debug-a6c9d018e88e6fa0b608.json",
+					"name" : "LLVMDebugInfoPDB",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDebuginfod::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDebuginfod-Debug-ab335c4d9c0d4c627482.json",
+					"name" : "LLVMDebuginfod",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDemangle::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDemangle-Debug-242ee6512736eb52f058.json",
+					"name" : "LLVMDemangle",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDiff::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDiff-Debug-f181fb9f590328afa3fd.json",
+					"name" : "LLVMDiff",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMDlltoolDriver::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMDlltoolDriver-Debug-33c72fc4b6eda65526d9.json",
+					"name" : "LLVMDlltoolDriver",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMExecutionEngine::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMExecutionEngine-Debug-9481eddcd1edfe6f1bf4.json",
+					"name" : "LLVMExecutionEngine",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMExegesis::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMExegesis-Debug-4c57accbeec935ded391.json",
+					"name" : "LLVMExegesis",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMExegesisAArch64::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMExegesisAArch64-Debug-0d1a6ec306b5e92b329c.json",
+					"name" : "LLVMExegesisAArch64",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMExegesisRISCV::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMExegesisRISCV-Debug-374ee3e53eb3a7210f2b.json",
+					"name" : "LLVMExegesisRISCV",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMExegesisX86::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMExegesisX86-Debug-108c495db3595265ef1c.json",
+					"name" : "LLVMExegesisX86",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMExtensions::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMExtensions-Debug-91180a9120930b8dedb3.json",
+					"name" : "LLVMExtensions",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFileCheck::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFileCheck-Debug-d29c57ee7868f256f776.json",
+					"name" : "LLVMFileCheck",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFrontendAtomic::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFrontendAtomic-Debug-b4aa14377cca5aeed840.json",
+					"name" : "LLVMFrontendAtomic",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFrontendDirective::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFrontendDirective-Debug-88d021b31ed422bb218f.json",
+					"name" : "LLVMFrontendDirective",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFrontendDriver::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFrontendDriver-Debug-0639a5e2900c5e22b0f5.json",
+					"name" : "LLVMFrontendDriver",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFrontendHLSL::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFrontendHLSL-Debug-9a95af1cad7b3b781c8c.json",
+					"name" : "LLVMFrontendHLSL",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFrontendOffloading::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFrontendOffloading-Debug-14993bb61a65fcad6dad.json",
+					"name" : "LLVMFrontendOffloading",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFrontendOpenACC::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFrontendOpenACC-Debug-5d5adde058a263d4dd4b.json",
+					"name" : "LLVMFrontendOpenACC",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFrontendOpenMP::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFrontendOpenMP-Debug-3f948163ca454eadb854.json",
+					"name" : "LLVMFrontendOpenMP",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFuzzMutate::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFuzzMutate-Debug-7c94841645ef900b0717.json",
+					"name" : "LLVMFuzzMutate",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMFuzzerCLI::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMFuzzerCLI-Debug-9b14be01d6d74922171f.json",
+					"name" : "LLVMFuzzerCLI",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMGlobalISel::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMGlobalISel-Debug-00e1207c83e60cdea8cb.json",
+					"name" : "LLVMGlobalISel",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMHipStdPar::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMHipStdPar-Debug-b4ed4cabb59fcae1a679.json",
+					"name" : "LLVMHipStdPar",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMIRPrinter::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMIRPrinter-Debug-6277363163fba3799dbb.json",
+					"name" : "LLVMIRPrinter",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMIRReader::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMIRReader-Debug-15ea46bd4b42d17cedbb.json",
+					"name" : "LLVMIRReader",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMInstCombine::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMInstCombine-Debug-6d7269d97f95a767d3aa.json",
+					"name" : "LLVMInstCombine",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMInstrumentation::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMInstrumentation-Debug-45556106c00b0c3459e6.json",
+					"name" : "LLVMInstrumentation",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMInterfaceStub::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMInterfaceStub-Debug-161d1af49e829e3ef27a.json",
+					"name" : "LLVMInterfaceStub",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMInterpreter::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMInterpreter-Debug-dbb10cb0ace746d1a655.json",
+					"name" : "LLVMInterpreter",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMJITLink::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMJITLink-Debug-572dd55c1440b243016e.json",
+					"name" : "LLVMJITLink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMLTO::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMLTO-Debug-d975d3f630a4c6c7099f.json",
+					"name" : "LLVMLTO",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMLibDriver::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMLibDriver-Debug-8545f61ae1648469fb5c.json",
+					"name" : "LLVMLibDriver",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMLineEditor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMLineEditor-Debug-fa56735e214a4c103ab2.json",
+					"name" : "LLVMLineEditor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMLinker::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMLinker-Debug-4eea462ad79efdb4c688.json",
+					"name" : "LLVMLinker",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMMC::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMMC-Debug-6514a7f19f6fb4ba88a6.json",
+					"name" : "LLVMMC",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMMCA::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMMCA-Debug-668ca3c343b2606c5887.json",
+					"name" : "LLVMMCA",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMMCDisassembler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMMCDisassembler-Debug-58838083d53422581549.json",
+					"name" : "LLVMMCDisassembler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMMCJIT::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMMCJIT-Debug-478c0750363cafe63c86.json",
+					"name" : "LLVMMCJIT",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMMCParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMMCParser-Debug-e8f0023e9bfbbdf7fa99.json",
+					"name" : "LLVMMCParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMMIRParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMMIRParser-Debug-f35fefd0e65a00b738a4.json",
+					"name" : "LLVMMIRParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMNVPTXCodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMNVPTXCodeGen-Debug-0a4c2dcbb7f1af2d12fc.json",
+					"name" : "LLVMNVPTXCodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMNVPTXDesc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMNVPTXDesc-Debug-1caeedc59c7e6a615cfb.json",
+					"name" : "LLVMNVPTXDesc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMNVPTXInfo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMNVPTXInfo-Debug-07c74f59a0d6dba62bb0.json",
+					"name" : "LLVMNVPTXInfo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMObjCARCOpts::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMObjCARCOpts-Debug-662a7087dff0a6ec82b3.json",
+					"name" : "LLVMObjCARCOpts",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMObjCopy::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMObjCopy-Debug-4153e82f9dd54c8617a4.json",
+					"name" : "LLVMObjCopy",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMObject::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMObject-Debug-aedea5b1427c672e89d0.json",
+					"name" : "LLVMObject",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMObjectYAML::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMObjectYAML-Debug-161dc4968ee92b7f3246.json",
+					"name" : "LLVMObjectYAML",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMOptDriver::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMOptDriver-Debug-02e092d1a51a35fe9a92.json",
+					"name" : "LLVMOptDriver",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMOption::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMOption-Debug-7321a743f2854080cb95.json",
+					"name" : "LLVMOption",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMOrcDebugging::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMOrcDebugging-Debug-de52c7ebaaa0395db0f5.json",
+					"name" : "LLVMOrcDebugging",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMOrcJIT::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMOrcJIT-Debug-742c10ba12c2fe217d9e.json",
+					"name" : "LLVMOrcJIT",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMOrcShared::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMOrcShared-Debug-4e6132a5813b33b8a513.json",
+					"name" : "LLVMOrcShared",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMOrcTargetProcess::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMOrcTargetProcess-Debug-d9983e7d59e642acc4fa.json",
+					"name" : "LLVMOrcTargetProcess",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMPasses::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMPasses-Debug-4b1da10327eafc554434.json",
+					"name" : "LLVMPasses",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMPlugins::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMPlugins-Debug-587310995abbc5765635.json",
+					"name" : "LLVMPlugins",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMProfileData::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMProfileData-Debug-30eaa3015c2c97a7ac57.json",
+					"name" : "LLVMProfileData",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRISCVAsmParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRISCVAsmParser-Debug-8d95ddab82c54d3387cf.json",
+					"name" : "LLVMRISCVAsmParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRISCVCodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRISCVCodeGen-Debug-7e5df28e3fe86e18b3a4.json",
+					"name" : "LLVMRISCVCodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRISCVDesc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRISCVDesc-Debug-a858319770787d50c3e9.json",
+					"name" : "LLVMRISCVDesc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRISCVDisassembler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRISCVDisassembler-Debug-dff865fa4d050e177424.json",
+					"name" : "LLVMRISCVDisassembler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRISCVInfo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRISCVInfo-Debug-1804b5fc3fc4db8fa070.json",
+					"name" : "LLVMRISCVInfo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRISCVTargetMCA::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRISCVTargetMCA-Debug-85b4ca0a937767b74900.json",
+					"name" : "LLVMRISCVTargetMCA",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRemarks::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRemarks-Debug-5e8b455e8fbbf852eceb.json",
+					"name" : "LLVMRemarks",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMRuntimeDyld::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMRuntimeDyld-Debug-ddb0c838d081716caf16.json",
+					"name" : "LLVMRuntimeDyld",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMSandboxIR::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMSandboxIR-Debug-8e37eb0eff293750d682.json",
+					"name" : "LLVMSandboxIR",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMScalarOpts::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMScalarOpts-Debug-f3c791b3da03e5f46799.json",
+					"name" : "LLVMScalarOpts",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMSelectionDAG::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMSelectionDAG-Debug-82e0ddee7877acb0c8cb.json",
+					"name" : "LLVMSelectionDAG",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMSupport::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMSupport-Debug-f47779aef5c58c704a28.json",
+					"name" : "LLVMSupport",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMSupportLSP::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMSupportLSP-Debug-bcbb2b37c3edf1243f16.json",
+					"name" : "LLVMSupportLSP",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMSymbolize::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMSymbolize-Debug-dfc663b16d0817236b3a.json",
+					"name" : "LLVMSymbolize",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTableGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTableGen-Debug-5042e865c0aa2a04f5e0.json",
+					"name" : "LLVMTableGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTableGenBasic::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTableGenBasic-Debug-0c708d633d433886a5a6.json",
+					"name" : "LLVMTableGenBasic",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTableGenCommon::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTableGenCommon-Debug-473204ae0c6a9011f848.json",
+					"name" : "LLVMTableGenCommon",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTarget::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTarget-Debug-5f7af0d15ca156ca8467.json",
+					"name" : "LLVMTarget",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTargetParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTargetParser-Debug-3ace9e1bb378def23229.json",
+					"name" : "LLVMTargetParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTelemetry::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTelemetry-Debug-b7ad01b139af3f7f4370.json",
+					"name" : "LLVMTelemetry",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTextAPI::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTextAPI-Debug-19fccacd468c061957bf.json",
+					"name" : "LLVMTextAPI",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTextAPIBinaryReader::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTextAPIBinaryReader-Debug-7ddf02deae4b8337ff24.json",
+					"name" : "LLVMTextAPIBinaryReader",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMTransformUtils::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMTransformUtils-Debug-386d6fb85532ed39d206.json",
+					"name" : "LLVMTransformUtils",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMVectorize::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMVectorize-Debug-d32b7bdfb1da4fd280e1.json",
+					"name" : "LLVMVectorize",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWebAssemblyAsmParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWebAssemblyAsmParser-Debug-74657b4fba6cf1ea9a58.json",
+					"name" : "LLVMWebAssemblyAsmParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWebAssemblyCodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWebAssemblyCodeGen-Debug-6faca8fae605eca94265.json",
+					"name" : "LLVMWebAssemblyCodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWebAssemblyDesc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWebAssemblyDesc-Debug-42a7f2ed828f7680332c.json",
+					"name" : "LLVMWebAssemblyDesc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWebAssemblyDisassembler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWebAssemblyDisassembler-Debug-448e6e54e0aee7afdb5d.json",
+					"name" : "LLVMWebAssemblyDisassembler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWebAssemblyInfo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWebAssemblyInfo-Debug-c805b1e02700165fc9ab.json",
+					"name" : "LLVMWebAssemblyInfo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWebAssemblyUtils::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWebAssemblyUtils-Debug-75b44e261d5293581dd9.json",
+					"name" : "LLVMWebAssemblyUtils",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWindowsDriver::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWindowsDriver-Debug-252d1e417dc17f6fd5ef.json",
+					"name" : "LLVMWindowsDriver",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMWindowsManifest::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMWindowsManifest-Debug-6a07ad278885e650738c.json",
+					"name" : "LLVMWindowsManifest",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMX86AsmParser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMX86AsmParser-Debug-f7a24416154fbf7c2bd1.json",
+					"name" : "LLVMX86AsmParser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMX86CodeGen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMX86CodeGen-Debug-b471be842eb748668a98.json",
+					"name" : "LLVMX86CodeGen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMX86Desc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMX86Desc-Debug-5d3d39012860bebd0546.json",
+					"name" : "LLVMX86Desc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMX86Disassembler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMX86Disassembler-Debug-693afb6cab071b3e3d81.json",
+					"name" : "LLVMX86Disassembler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMX86Info::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMX86Info-Debug-9777dc8e4d370fbc1a58.json",
+					"name" : "LLVMX86Info",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMX86TargetMCA::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMX86TargetMCA-Debug-f0ce9a5cceae8216bfcc.json",
+					"name" : "LLVMX86TargetMCA",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMXRay::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMXRay-Debug-47eacb42a5a9928eed2d.json",
+					"name" : "LLVMXRay",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LLVMipo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LLVMipo-Debug-0852dec972242e48d21f.json",
+					"name" : "LLVMipo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "LTO::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-LTO-Debug-dfa8cd8f27636f2d618a.json",
+					"name" : "LTO",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Remarks::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Remarks-Debug-d6ad878aeb412df9bbef.json",
+					"name" : "Remarks",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "bugpoint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bugpoint-Debug-067abba6c8eb6c23ec3b.json",
+					"name" : "bugpoint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dsymutil::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dsymutil-Debug-50c84bd6e2c6f708acb5.json",
+					"name" : "dsymutil",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llc-Debug-a65ebf6379a31ca7fdba.json",
+					"name" : "llc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "lli::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-lli-Debug-570898ec7c41896d64b6.json",
+					"name" : "lli",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-ar::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-ar-Debug-0a13c97c9d867a49365b.json",
+					"name" : "llvm-ar",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-as::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-as-Debug-8d8d4bafd0ed96c44c65.json",
+					"name" : "llvm-as",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-bcanalyzer::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-bcanalyzer-Debug-4522974cd535bf048e37.json",
+					"name" : "llvm-bcanalyzer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-c-test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-c-test-Debug-392586bd8d5141634d9a.json",
+					"name" : "llvm-c-test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cas::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cas-Debug-da1f1226b22a5ccc1570.json",
+					"name" : "llvm-cas",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cat::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cat-Debug-a976b118c80b3e700643.json",
+					"name" : "llvm-cat",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cfi-verify::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cfi-verify-Debug-7aefb7b15e2f1aa4e21c.json",
+					"name" : "llvm-cfi-verify",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cgdata::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cgdata-Debug-24fab9258ff5b9538560.json",
+					"name" : "llvm-cgdata",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-config::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-config-Debug-f54767cdd542377833ec.json",
+					"name" : "llvm-config",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cov::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cov-Debug-2f655c50817670a86e49.json",
+					"name" : "llvm-cov",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-ctxprof-util::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-ctxprof-util-Debug-436d064d0145573f87dd.json",
+					"name" : "llvm-ctxprof-util",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cvtres::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cvtres-Debug-dbdcda42c08faba8b284.json",
+					"name" : "llvm-cvtres",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cxxdump::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cxxdump-Debug-254411e080875963a301.json",
+					"name" : "llvm-cxxdump",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cxxfilt::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cxxfilt-Debug-702cfb7e3d38483a3f96.json",
+					"name" : "llvm-cxxfilt",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-cxxmap::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-cxxmap-Debug-a693760ccf6bd24e2ad3.json",
+					"name" : "llvm-cxxmap",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-debuginfo-analyzer::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-debuginfo-analyzer-Debug-8d1cbec32483578b7254.json",
+					"name" : "llvm-debuginfo-analyzer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-debuginfod::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-debuginfod-Debug-4eda14e2ab7d27c3cf80.json",
+					"name" : "llvm-debuginfod",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-debuginfod-find::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-debuginfod-find-Debug-89f1809947e240e72a27.json",
+					"name" : "llvm-debuginfod-find",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-diff::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-diff-Debug-860d8ca3deb2fbec0c01.json",
+					"name" : "llvm-diff",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-dis::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-dis-Debug-e5c5b78bb36aa19b6682.json",
+					"name" : "llvm-dis",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-dwarfdump::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-dwarfdump-Debug-31b451abdd9468a6bb7d.json",
+					"name" : "llvm-dwarfdump",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-dwarfutil::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-dwarfutil-Debug-f782f11b4fd4b0483373.json",
+					"name" : "llvm-dwarfutil",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-dwp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-dwp-Debug-70882df838b0003dc068.json",
+					"name" : "llvm-dwp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-exegesis::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-exegesis-Debug-c49fe42550bb2befdab9.json",
+					"name" : "llvm-exegesis",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-extract::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-extract-Debug-42024cb6591708b86729.json",
+					"name" : "llvm-extract",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-gsymutil::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-gsymutil-Debug-cf38dc9e09c43c93003e.json",
+					"name" : "llvm-gsymutil",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-ifs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-ifs-Debug-ca1cdea2b4660785613e.json",
+					"name" : "llvm-ifs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-ir2vec::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-ir2vec-Debug-c04a4bd6915af4033272.json",
+					"name" : "llvm-ir2vec",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-jitlink::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-jitlink-Debug-1a6bc37bf68c3ed9c607.json",
+					"name" : "llvm-jitlink",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-libtool-darwin::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-libtool-darwin-Debug-4376bef43e9e0f644e26.json",
+					"name" : "llvm-libtool-darwin",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-link::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-link-Debug-6924f99510b644eef0d6.json",
+					"name" : "llvm-link",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-lipo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-lipo-Debug-d56d6ce8ed375a45ccfc.json",
+					"name" : "llvm-lipo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-lto::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-lto-Debug-329a805ddff91e81b383.json",
+					"name" : "llvm-lto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-lto2::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-lto2-Debug-042a920037fca6ce1c80.json",
+					"name" : "llvm-lto2",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-mc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-mc-Debug-158d460af14627abc4ee.json",
+					"name" : "llvm-mc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-mca::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-mca-Debug-ba427dd5bad186e3981d.json",
+					"name" : "llvm-mca",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-ml::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-ml-Debug-8f9cd0378d7912670fab.json",
+					"name" : "llvm-ml",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-modextract::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-modextract-Debug-527804b1b927c900fb73.json",
+					"name" : "llvm-modextract",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-mt::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-mt-Debug-f5ee97d5a23ff51f04d2.json",
+					"name" : "llvm-mt",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-nm::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-nm-Debug-2a98073ea570b8aa5eb3.json",
+					"name" : "llvm-nm",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-objcopy::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-objcopy-Debug-67f9daf52262fbd8e46a.json",
+					"name" : "llvm-objcopy",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-objdump::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-objdump-Debug-3c3c007e8139029a79c2.json",
+					"name" : "llvm-objdump",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-offload-binary::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-offload-binary-Debug-91252d6fc801d230c7f2.json",
+					"name" : "llvm-offload-binary",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-offload-wrapper::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-offload-wrapper-Debug-66ee9e29578ee67d20b0.json",
+					"name" : "llvm-offload-wrapper",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-opt-report::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-opt-report-Debug-bb2ab0e35236996dbcd8.json",
+					"name" : "llvm-opt-report",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-pdbutil::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-pdbutil-Debug-7e211d547173aeb311bb.json",
+					"name" : "llvm-pdbutil",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-profdata::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-profdata-Debug-80400713c5066a79e07a.json",
+					"name" : "llvm-profdata",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-profgen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-profgen-Debug-81eabff803dfd892850e.json",
+					"name" : "llvm-profgen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-rc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-rc-Debug-fc38c6399be421cbf61b.json",
+					"name" : "llvm-rc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-readobj::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-readobj-Debug-8ff52831dd811a2dde32.json",
+					"name" : "llvm-readobj",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-readtapi::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-readtapi-Debug-ad8cd382fa8012cd37a6.json",
+					"name" : "llvm-readtapi",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-reduce::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-reduce-Debug-bd2a7e3065f909d13685.json",
+					"name" : "llvm-reduce",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-remarkutil::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-remarkutil-Debug-66e94e2656ee58cd1c78.json",
+					"name" : "llvm-remarkutil",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-rtdyld::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-rtdyld-Debug-5379eb7d32f7343eb981.json",
+					"name" : "llvm-rtdyld",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-sim::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-sim-Debug-6caa4f00b0788b486c3e.json",
+					"name" : "llvm-sim",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-size::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-size-Debug-7ce7a1b782f0ed769010.json",
+					"name" : "llvm-size",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-split::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-split-Debug-defb94eb6f52e3a52f7f.json",
+					"name" : "llvm-split",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-stress::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-stress-Debug-83849299411a7fe0de88.json",
+					"name" : "llvm-stress",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-strings::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-strings-Debug-7fe17e95b54f840f0847.json",
+					"name" : "llvm-strings",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-symbolizer::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-symbolizer-Debug-220baa868b075bb836ce.json",
+					"name" : "llvm-symbolizer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-tblgen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-tblgen-Debug-88cc49947f99f66531fb.json",
+					"name" : "llvm-tblgen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-tli-checker::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-tli-checker-Debug-4f8119d3be6c757ff48a.json",
+					"name" : "llvm-tli-checker",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-undname::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-undname-Debug-1da6ae9e6e07fe774baa.json",
+					"name" : "llvm-undname",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "llvm-xray::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-llvm-xray-Debug-72ccadccde0862d9f0c4.json",
+					"name" : "llvm-xray",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "opt::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-opt-Debug-149a6ba6cc2e1b6d4814.json",
+					"name" : "opt",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "reduce-chunk-list::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-reduce-chunk-list-Debug-d60b59a5271756d1cc8c.json",
+					"name" : "reduce-chunk-list",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sancov::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sancov-Debug-d6b24f1d224ffa17443d.json",
+					"name" : "sancov",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sanstats::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sanstats-Debug-300c77e79ea5ae68ef1e.json",
+					"name" : "sanstats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "verify-uselistorder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-verify-uselistorder-Debug-23a0cd912e16decebb14.json",
+					"name" : "verify-uselistorder",
+					"projectIndex" : 0
+				}
+			],
+			"directories" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
+						35,
+						36,
+						37,
+						38,
+						39,
+						40,
+						41,
+						42,
+						43,
+						44,
+						45,
+						46,
+						47,
+						48,
+						49,
+						50,
+						51,
+						52,
+						53,
+						54,
+						55,
+						56,
+						57,
+						58,
+						59,
+						60,
+						61,
+						62,
+						63,
+						64,
+						65,
+						66,
+						67,
+						68,
+						69,
+						70,
+						71,
+						72,
+						73,
+						74,
+						75,
+						76,
+						77,
+						78,
+						79,
+						80,
+						81,
+						82,
+						83,
+						84,
+						85,
+						86,
+						87,
+						88,
+						89,
+						90,
+						91,
+						92,
+						93,
+						94,
+						95,
+						96,
+						97,
+						98,
+						99,
+						100,
+						101,
+						102,
+						103,
+						104,
+						105,
+						106,
+						107,
+						108,
+						109,
+						110,
+						111,
+						112,
+						113,
+						114,
+						115,
+						116,
+						117,
+						118,
+						119,
+						120,
+						121,
+						122,
+						123,
+						124,
+						125,
+						126,
+						127,
+						128,
+						129,
+						130,
+						131,
+						132,
+						133,
+						134,
+						135,
+						136,
+						137,
+						138,
+						139,
+						140,
+						141,
+						142,
+						143,
+						144,
+						145,
+						146,
+						147,
+						148,
+						149,
+						150,
+						151,
+						152,
+						153,
+						154,
+						155,
+						156,
+						157,
+						158,
+						159,
+						160,
+						161,
+						162,
+						163,
+						164,
+						165,
+						166,
+						167,
+						168,
+						169,
+						170,
+						171,
+						172,
+						173,
+						174,
+						175,
+						176,
+						177,
+						178,
+						179,
+						180,
+						181,
+						182,
+						183,
+						184,
+						185,
+						186,
+						187,
+						188,
+						189,
+						190,
+						191,
+						192,
+						193,
+						194,
+						195,
+						196,
+						197,
+						198,
+						199,
+						200,
+						201,
+						202,
+						203,
+						204,
+						205,
+						206,
+						207,
+						208,
+						209,
+						210,
+						211,
+						212,
+						213,
+						214,
+						215,
+						216,
+						217,
+						218,
+						219
+					],
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"jsonFile" : "directory-.-Debug-f6f22219c74102c3da70.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						7
+					]
+				},
+				{
+					"build" : "Core",
+					"jsonFile" : "directory-Core-Debug-d7803e10c1d3b635374e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Core",
+					"targetIndexes" : 
+					[
+						0,
+						6
+					]
+				},
+				{
+					"build" : "Language",
+					"jsonFile" : "directory-Language-Debug-ed0e89912663b2b876ad.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.20"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Language",
+					"targetIndexes" : 
+					[
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"abstractTargetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
+						35,
+						36,
+						37,
+						38,
+						39,
+						40,
+						41,
+						42,
+						43,
+						44,
+						45,
+						46,
+						47,
+						48,
+						49,
+						50,
+						51,
+						52,
+						53,
+						54,
+						55,
+						56,
+						57,
+						58,
+						59,
+						60,
+						61,
+						62,
+						63,
+						64,
+						65,
+						66,
+						67,
+						68,
+						69,
+						70,
+						71,
+						72,
+						73,
+						74,
+						75,
+						76,
+						77,
+						78,
+						79,
+						80,
+						81,
+						82,
+						83,
+						84,
+						85,
+						86,
+						87,
+						88,
+						89,
+						90,
+						91,
+						92,
+						93,
+						94,
+						95,
+						96,
+						97,
+						98,
+						99,
+						100,
+						101,
+						102,
+						103,
+						104,
+						105,
+						106,
+						107,
+						108,
+						109,
+						110,
+						111,
+						112,
+						113,
+						114,
+						115,
+						116,
+						117,
+						118,
+						119,
+						120,
+						121,
+						122,
+						123,
+						124,
+						125,
+						126,
+						127,
+						128,
+						129,
+						130,
+						131,
+						132,
+						133,
+						134,
+						135,
+						136,
+						137,
+						138,
+						139,
+						140,
+						141,
+						142,
+						143,
+						144,
+						145,
+						146,
+						147,
+						148,
+						149,
+						150,
+						151,
+						152,
+						153,
+						154,
+						155,
+						156,
+						157,
+						158,
+						159,
+						160,
+						161,
+						162,
+						163,
+						164,
+						165,
+						166,
+						167,
+						168,
+						169,
+						170,
+						171,
+						172,
+						173,
+						174,
+						175,
+						176,
+						177,
+						178,
+						179,
+						180,
+						181,
+						182,
+						183,
+						184,
+						185,
+						186,
+						187,
+						188,
+						189,
+						190,
+						191,
+						192,
+						193,
+						194,
+						195,
+						196,
+						197,
+						198,
+						199,
+						200,
+						201,
+						202,
+						203,
+						204,
+						205,
+						206,
+						207,
+						208,
+						209,
+						210,
+						211,
+						212,
+						213,
+						214,
+						215,
+						216,
+						217,
+						218,
+						219
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "UniversalLanguage",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "CoreStaticLib::@94795ff35dabbbd3a8ca",
+					"jsonFile" : "target-CoreStaticLib-Debug-bb8320b053d4a782efb9.json",
+					"name" : "CoreStaticLib",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "acc_gen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-acc_gen-Debug-83f1dbaa644aef8e83a0.json",
+					"name" : "acc_gen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "intrinsics_gen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-intrinsics_gen-Debug-293967556cb4ce799f19.json",
+					"name" : "intrinsics_gen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "omp_gen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-omp_gen-Debug-a3057cd4f2197bfcd536.json",
+					"name" : "omp_gen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "target_parser_gen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-target_parser_gen-Debug-84f1c0f92018c8fd6aca.json",
+					"name" : "target_parser_gen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "ul::@be43ff4b29a856009141",
+					"jsonFile" : "target-ul-Debug-cfe033c727c22ab2f32b.json",
+					"name" : "ul",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "ul_test::@94795ff35dabbbd3a8ca",
+					"jsonFile" : "target-ul_test-Debug-38c6a0856d2a83b04b28.json",
+					"name" : "ul_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "vt_gen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-vt_gen-Debug-8b754a6001cc4b0af4a6.json",
+					"name" : "vt_gen",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/marti/source/repos/UniversalLanguage/build/x64-debug",
+		"source" : "C:/Users/marti/source/repos/UniversalLanguage"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	}
+}

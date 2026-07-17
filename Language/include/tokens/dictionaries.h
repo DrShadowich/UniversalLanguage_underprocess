@@ -51,7 +51,6 @@ namespace ul::dictionaries
 			token::token_type{ token::TYPE_TOKEN_TYPE::COLON, "COLON", ":" },
 			token::token_type{ token::TYPE_TOKEN_TYPE::COMMA, "COMMA", "," },
 			token::token_type{ token::TYPE_TOKEN_TYPE::FORMAT_SYMBOL, "FORMAT_SYMBOL", "$" },
-
 			// --- Литералы (Regex) ---
 			// 0-9+
 			token::token_type{ token::TYPE_TOKEN_TYPE::NUMBER_LITERAL, "NUMBER_LITERAL", std::regex("[0-9]+") },
@@ -83,7 +82,7 @@ namespace ul::dictionaries
 			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_CONST, "KEYWORD_CONST", std::regex("\\bconst\\b") },
 			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_GLOBAL, "KEYWORD_GLOBAL", std::regex("\\bglobal\\b") }, // Ваш кастомный
 			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_CONSTEXPR, "KEYWORD_CONSTEXPR", std::regex("\\bconstexpr\\b") },
-			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_MUT_OUTPUT, "KEYWORD_MUT_OUTPUT", std::regex("\\bout\\b") }, // Соответствует комментарию "// out"
+			token::token_type{ token::TYPE_TOKEN_TYPE::KEYWORD_REF, "KEYWORD_REF", std::regex("\\bref\\b") },
 
 			// --- Булевы значения ---
 			token::token_type{ token::TYPE_TOKEN_TYPE::TRUE, "TRUE", std::regex("\\btrue\\b") },

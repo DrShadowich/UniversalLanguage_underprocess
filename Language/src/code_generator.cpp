@@ -295,6 +295,14 @@ namespace ul::codegen
 			ret_ret_value.value = { std::move(ret_value), true };
 			return ret_ret_value;
 		}
+		else if(auto* n = dynamic_cast<expr::variable_reference_node*>(exprp))
+		{
+			llvm_union ret_var;
+			if (!names_table_.contains_variable(n->variable->name))
+				CODE_GENERATOR_EXCEPTION(std::format("Name {} doesn\'t exsist", n->variable->name));
+			ret_var.value = { names_table_.get_variable(n->variable->name), false };
+			return ret_var;
+		}
 		else if (auto* n = dynamic_cast<expr::variable_node*>(exprp))
 		{
 			llvm_union ret_var;
@@ -328,6 +336,7 @@ namespace ul::codegen
 		else if (auto* n = dynamic_cast<expr::function_definition_node*>(exprp))
 		{
 			llvm_union ret_function_definition;
+			bool have_va_args = n->parameters->va_args;
 			auto* vec_params = generate_expression(std::move(n->parameters)).param_list;
 			std::vector<llvm::Type*> vec_types;
 			for (auto&& param : *vec_params)
@@ -339,7 +348,7 @@ namespace ul::codegen
 				(
 					names_table_.get_type(n->function_type->type_str),
 					vec_types,
-					n->va_args
+					have_va_args
 				);
 			if (n->function->name->short_name == "main_fn" || n->function->is_extern)
 			{
