@@ -4,7 +4,7 @@
 #include <regex>
 namespace ul::token
 {
-	enum class TYPE_TOKEN_TYPE : short
+	enum class TID : short
 	{
 		NO_TOKEN = 0,
 		// \n
@@ -77,6 +77,8 @@ namespace ul::token
 		KEYWORD_CLASS,
 		// immut
 		KEYWORD_IMMUT,
+		// using
+		KEYWORD_USING,
 		// ref
 		KEYWORD_REF,
 		// const
@@ -133,31 +135,33 @@ namespace ul::token
 		END_MARKER,
 		// #config
 		CONFIG_MARKER,
-		// %([\s\S]*?)%
+		// %(\w*)([\w\S\s]*?)%(\w*)
 		MARKER_EXPRESSION,
+		// %(\w*)([\w\S\s]*?)%(end)
+		MARKER_EXPRESSION_WITH_END,
 		// ->
 		POINTER,
 		END,
 	};
-	
+	using TID = TID;
 	
 	struct token_type
 	{
 		std::unique_ptr<std::string> token_pattern{};
 		std::unique_ptr<std::regex> regex_token_pattern{};
 		const char* enum_type_string{};
-		TYPE_TOKEN_TYPE enum_type{};
+		TID enum_type{};
 		// What kind of lexeme should it be to become this token type
 		bool is_pattern_regex = false;
 		token_type();
 		token_type(const token_type& rhs);
 		token_type(token_type&& rhs) noexcept;
-		explicit token_type(TYPE_TOKEN_TYPE token_type_, const char* type_str, std::string pattern);
-		explicit token_type(TYPE_TOKEN_TYPE token_type_, const char* type_str, std::regex pattern);
+		explicit token_type(TID token_type_, const char* type_str, std::string pattern);
+		explicit token_type(TID token_type_, const char* type_str, std::regex pattern);
 		token_type& operator=(const token_type& rhs);
 		token_type& operator=(token_type&& rhs) noexcept;
-		operator token::TYPE_TOKEN_TYPE() const { return enum_type; }
-		bool operator==(TYPE_TOKEN_TYPE rhs) const { return enum_type == rhs; }
-		bool operator!=(TYPE_TOKEN_TYPE rhs) const { return !(enum_type == rhs); }
+		operator token::TID() const { return enum_type; }
+		bool operator==(TID rhs) const { return enum_type == rhs; }
+		bool operator!=(TID rhs) const { return not (enum_type == rhs); }
 	};
 }

@@ -10,7 +10,7 @@
 
 #define EXCEPTION(message)					(throw ULEX exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 #define LEXER_EXCEPTION(message)			(throw ULEX lexer_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
-#define PARSER_EXCEPTION(message)			(throw ULEX parser_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
+#define PARSER_EXCEPTION(message)			(throw ULEX parser_exception{ (message), __LINE__, __FILE__, __FUNCTION__  })
 #define CODE_GENERATOR_EXCEPTION(message)	(throw ULEX code_generator_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 #define TOKENIZER_EXCEPTION(message)		(throw ULEX tokenizer_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 #define VISITOR_EXCEPTION(message)			(throw ULEX visitor_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
@@ -47,8 +47,12 @@ namespace ul::ex
 
 	class parser_exception final : public ULEX exception
 	{
+	private:
+		uint64_t file_code_line_{ 0 };
+		uint64_t file_code_col_{ 0 };
 	public:
 		using ULEX exception::exception;
+		explicit parser_exception(std::string msg, std::string file_name, std::pair<uint64_t, uint64_t> col_and_row);
 	protected:
 		virtual void native_string() override;
 	};

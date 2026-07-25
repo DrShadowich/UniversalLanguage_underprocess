@@ -12,6 +12,6 @@ namespace ul::dictionaries
 				return tt;
 			}
 		}
-		return token::token_type{ token::TYPE_TOKEN_TYPE::NO_TOKEN, "NO_TOKEN", "" };
+		return token::token_type{ token::TID::NO_TOKEN, "NO_TOKEN", "" };
 	}
 }

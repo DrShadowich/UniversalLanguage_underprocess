@@ -1,22 +1,18 @@
 ﻿set(SRC_DIR "${CMAKE_SOURCE_DIR}/Core/src")
 
-add_library (CoreStaticLib  
-"${SRC_DIR}/core_exceptions.cpp"
+set(SRC_ADDS "${SRC_DIR}/core_exceptions.cpp"
 "${SRC_DIR}/commentaries.cpp"
 "${SRC_DIR}/separator.cpp"
 "${SRC_DIR}/tokenizer.cpp"
 "${SRC_DIR}/simple_variable.cpp"
 "${SRC_DIR}/name_table.cpp"
-"${SRC_DIR}/llvm_value.cpp")
+"${SRC_DIR}/llvm_value.cpp"
+"${SRC_DIR}/source_manager.cpp"
+"${SRC_DIR}/source_location_ul.cpp")
+
+add_library (CoreStaticLib "${SRC_ADDS}")
 target_include_directories(CoreStaticLib PUBLIC "${CMAKE_SOURCE_DIR}/Core/include")
 
-add_executable(ul_test 
-"${SRC_DIR}/core_exceptions.cpp"
-"${SRC_DIR}/commentaries.cpp" 
-"${SRC_DIR}/test.cpp"
-"${SRC_DIR}/separator.cpp"
-"${SRC_DIR}/tokenizer.cpp"
-"${SRC_DIR}/simple_variable.cpp"
-"${SRC_DIR}/name_table.cpp"
-"${SRC_DIR}/llvm_value.cpp")
+add_executable(ul_test "${SRC_ADDS}" "${SRC_DIR}/test.cpp")
 target_include_directories(ul_test PUBLIC "${CMAKE_SOURCE_DIR}/Core/include")
+target_compile_definitions(ul_test PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)

@@ -16,21 +16,15 @@ namespace ul::lexer
 		ul::utils::classes::tokenizer tokenizer_;
 		std::string input_information_;
 		tok_info_vector ready_tokens_;
-		uint32_t cursor_{ 0 };
+		uint64_t cursor_{ 0 };
 	public:
-		language_lexer() :
-			input_information_{ "" }, tokenizer_{ std::move(utils::separator{ " \t\r", "()/+-*:;{},.\n" }) }
-		{}
-		template<typename StringType>
-		language_lexer(StringType&& input) : 
-			input_information_{ std::forward<StringType>(input) }, tokenizer_{ std::move(utils::separator{ " \t\r", "()/+-*:;{},.\n" }) }
-		{
-			get_tokens();
-			ready_tokens_.emplace_back("", token::token_type{ token::TYPE_TOKEN_TYPE::END, "END", ""} );
-		}
+		language_lexer();
+		language_lexer(std::string input);
 		tok_info_vector_it front();
 		void next();
 		void flush_cursor();
+		uint64_t get_current_offset();
+		std::string get_input_information();
 		tok_info_vector_it begin();
 		tok_info_vector_it end();
 		tok_info_vector_cit begin() const;
@@ -39,8 +33,8 @@ namespace ul::lexer
 		tok_info_vector_rit rend();
 		tok_info_vector_crit rbegin() const;
 		tok_info_vector_crit rend() const;
-		bool expect(token::TYPE_TOKEN_TYPE);
-		bool not_expect(token::TYPE_TOKEN_TYPE);
+		bool expect(token::TID);
+		bool not_expect(token::TID);
 		bool is_now_break_symbol();
 		bool is_end_symbol();
 	private:
@@ -51,6 +45,7 @@ namespace ul::lexer
 			input_information_ = std::format<StringType>(information);
 			get_tokens();
 		}
-
+		void determine_va_arg();
+		void determine_not_equal();
 	};
 }

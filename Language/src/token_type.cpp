@@ -38,14 +38,14 @@ namespace ul::token
 			this->token_pattern = std::make_unique<std::string>(*rhs.token_pattern);
 		return *this;
 	}
-	token_type::token_type(ul::token::TYPE_TOKEN_TYPE token_type_, const char* type_str, std::string pattern) :
+	token_type::token_type(ul::token::TID token_type_, const char* type_str, std::string pattern) :
 		token_pattern{ std::make_unique<std::string>(std::move(pattern)) },
 		regex_token_pattern{ nullptr },
 		is_pattern_regex{ false },
 		enum_type{ token_type_ },
 		enum_type_string{ type_str }
 	{}
-	token_type::token_type(ul::token::TYPE_TOKEN_TYPE token_type_, const char* type_str, std::regex pattern) :
+	token_type::token_type(ul::token::TID token_type_, const char* type_str, std::regex pattern) :
 		regex_token_pattern{ std::make_unique<std::regex>(std::move(pattern)) },
 		token_pattern{ nullptr },
 		is_pattern_regex{ true },

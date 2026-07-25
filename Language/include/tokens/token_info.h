@@ -22,8 +22,8 @@ namespace ul::token
 		
 		bool operator==(const token_info& rhs) const { return lexeme == rhs.lexeme && type.enum_type == rhs.type.enum_type; }
 		bool operator!=(const token_info& rhs) const { return !(*this == rhs); }
-		bool operator==(const token::TYPE_TOKEN_TYPE& rhs) const { return type.enum_type == rhs; }
-		bool operator!=(const token::TYPE_TOKEN_TYPE& rhs) const { return type.enum_type != rhs; }
+		bool operator==(const token::TID& rhs) const { return type.enum_type == rhs; }
+		bool operator!=(const token::TID& rhs) const { return type.enum_type != rhs; }
 		bool operator==(const std::string& rhs) const { return lexeme == rhs; }
 		bool operator!=(const std::string& rhs) const { return !(*this == rhs); }
 		

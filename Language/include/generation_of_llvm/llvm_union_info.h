@@ -1,12 +1,6 @@
 #include <llvm_libs.h>
 namespace ul::codegen
 {
-	struct expanded_llvm_value
-	{
-		llvm::Value* value;
-		bool is_return_value;
-	};
-
 	struct llvm_aligned_type
 	{
 		llvm::Type* type;
@@ -22,7 +16,7 @@ namespace ul::codegen
 	// Return type for code_generator
 	union llvm_union
 	{
-		expanded_llvm_value value;
+		llvm::Value* value;
 		llvm::Function* function_info;
 		llvm::FunctionCallee f_callee;
 		llvm::FunctionType* f_type;

@@ -7,6 +7,14 @@
 
 namespace ul::codegen
 {
+
+	struct generator_context
+	{
+		llvm::BasicBlock* if_statement_space;
+		llvm::BasicBlock* current_function_space;
+		bool is_return_value = false;
+	};
+
 	class code_generator
 	{
 	private:
@@ -18,7 +26,10 @@ namespace ul::codegen
 		llvm::Module& module_;
 		llvm::IRBuilder<> builder_;
 
+		generator_context gctx_;
+
 		uint32_t bb_counter_{};
+
 	public:
 		code_generator() = default;
 		code_generator(llvm::LLVMContext& ctx, llvm::Module& module, std::vector<std::unique_ptr<stmt::statement>> AST);
@@ -28,6 +39,7 @@ namespace ul::codegen
 		llvm_union generate_expression(expr::expr_node_ptr expr);
 		llvm_union generate_statement(stmt::statement_ptr stmt);
 		llvm_aligned_type get_aligned_type(const std::string& name);
+		std::pair<llvm::Value*, llvm::Value*> get_binary_ops_operands(expr::expr_node_ptr first, expr::expr_node_ptr second);
 		void add_depth();
 		void sub_depth();
 	};

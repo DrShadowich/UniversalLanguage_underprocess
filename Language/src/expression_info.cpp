@@ -28,6 +28,7 @@ namespace ul::expr
 		}
 	}
 
+
 	type_node::type_node(std::string type_string) :
 		type_str{ std::move(type_string) }
 	{}
@@ -39,9 +40,9 @@ namespace ul::expr
 		lexeme{ lexeme_ }, bit_count{ bit_count_ }
 	{}
 
-	string_literal_node::string_literal_node(std::string&& lexeme_) : lexeme{ std::move(lexeme_) }
+	string_literal_node::string_literal_node(std::string&& lexeme_) : literal{ std::move(lexeme_) }
 	{}
-	string_literal_node::string_literal_node(const std::string& lexeme_) : lexeme{ lexeme_ }
+	string_literal_node::string_literal_node(const std::string& lexeme_) : literal{ lexeme_ }
 	{}
 
 	binary_operator_node::binary_operator_node(token::token_info& operator_, expr_node_ptr left_, expr_node_ptr right_) :
@@ -120,13 +121,6 @@ namespace ul::expr
 	{}
 	field_call_node::field_call_node(expr_node_ptr parent_, expr_node_ptr child_, std::unique_ptr<field_call_node> next_field_call_) :
 		parent{ std::move(parent_) }, child{ std::move(child_) }, next_field_call{ std::move(next_field_call_) }
-	{}
-
-	return_value_node::return_value_node(expr_node_ptr value_) :
-		value{ std::move(value_) }
-	{}
-	return_value_node::return_value_node(expr_node_ptr value_, std::string return_type_name) :
-		value{ std::move(value_) }, type_str{ std::move(return_type_name) }
 	{}
 
 	variable_reference_node::variable_reference_node(variable_node_ptr var) :

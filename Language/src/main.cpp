@@ -10,7 +10,7 @@ static void writeModuleToLL(llvm::Module& M, llvm::StringRef Path)
 	std::error_code EC;
 	llvm::raw_fd_ostream OS(Path, EC);
 	if (EC) {
-		
+
 		return;
 	}
 	M.print(OS, nullptr);
@@ -25,18 +25,24 @@ int main()
 	ul::lexer::language_lexer l{ input };
 	ul::parser::language_parser p{ l };
 	auto&& stmts = p.parse_program();
-	llvm::LLVMContext ctx{};
-	llvm::Module module_{ "main", ctx };
-	ul::codegen::code_generator c{ ctx, module_, std::move(stmts->statements) };
 	try
 	{
+		llvm::LLVMContext ctx{};
+		llvm::Module module_{ "main", ctx };
+		ul::codegen::code_generator c{ ctx, module_, std::move(stmts->statements) };
 		c.generate_statements();
+		writeModuleToLL(module_, "main.ll");
+	}
+	catch (ul::ex::parser_exception& ex)
+	{
+		std::cout << ex.what() << std::endl;
+		return -1;
 	}
 	catch (std::exception& ex)
 	{
 		std::cout << ex.what() << std::endl;
 		throw;
 	}
-	writeModuleToLL(module_, "main.ll");
+	system("C:\\Users\\marti\\source\\repos\\UniversalLanguage\\build\\x64-debug\\bin\\clang++ -O2 main.ll -o main.exe");
 	return 0;
 }

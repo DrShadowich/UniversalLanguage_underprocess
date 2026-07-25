@@ -19,7 +19,7 @@
         },
         {
             "name": "x64-debug",
-            "displayName": "x64 Debug",
+            "displayName": "DEBUG MODE",
             "inherits": "windows-base",
             "architecture": {
                 "value": "x64",
@@ -31,7 +31,7 @@
         },
         {
             "name": "x64-release",
-            "displayName": "x64 Release",
+            "displayName": "RELEASE MODE",
             "inherits": "x64-debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"

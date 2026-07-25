@@ -1,7 +1,9 @@
 #pragma once
 #include <token_info.h>
 #include <simple_variable.h>
+#include <source_location_ul.h>
 #include <memory>
+#include <lexer.h>
 namespace ul::expr
 {
 	namespace detail
@@ -27,6 +29,7 @@ namespace ul::expr
 	// Basic main node
 	struct expr_node
 	{
+		expr_node() = default;
 		virtual ~expr_node() = default;
 	};
 	using expr_node_ptr = std::unique_ptr<expr_node>;
@@ -50,7 +53,7 @@ namespace ul::expr
 	
 	struct string_literal_node : public expr_node
 	{
-		std::string lexeme;
+		std::string literal;
 		explicit string_literal_node(std::string&& lexeme_);
 		explicit string_literal_node(const std::string& lexeme_);
 	};
@@ -64,6 +67,12 @@ namespace ul::expr
 		explicit binary_operator_node(token::token_info& operator_, expr_node_ptr left_, expr_node_ptr right_);
 	};
 	using binary_operator_node_ptr = std::unique_ptr<binary_operator_node>;
+
+	struct logical_binary_operator_node : public binary_operator_node
+	{
+		using binary_operator_node::binary_operator_node;
+	};
+	using logical_binary_operator_node_ptr = std::unique_ptr<logical_binary_operator_node>;
 
 	struct unary_operator_node : public expr_node
 	{
@@ -178,15 +187,6 @@ namespace ul::expr
 		explicit field_call_node(expr_node_ptr parent_, expr_node_ptr child_, std::unique_ptr<field_call_node> next_field_call_);
 	};
 	using field_call_node_ptr = std::unique_ptr<field_call_node>;
-
-	struct return_value_node : public expr_node
-	{
-		expr_node_ptr value;
-		std::string type_str;
-		explicit return_value_node(expr_node_ptr value_);
-		explicit return_value_node(expr_node_ptr value_, std::string return_type_name);
-	};
-	using return_value_node_ptr = std::unique_ptr<return_value_node>;
 
 	struct variable_reference_node : public expr_node
 	{
