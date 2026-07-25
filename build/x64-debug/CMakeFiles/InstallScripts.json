@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/Users/marti/source/repos/UniversalLanguage/build/x64-debug/cmake_install.cmake",
-		"C:/Users/marti/source/repos/UniversalLanguage/build/x64-debug/Core/cmake_install.cmake",
-		"C:/Users/marti/source/repos/UniversalLanguage/build/x64-debug/Language/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
