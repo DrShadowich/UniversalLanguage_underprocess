@@ -20,9 +20,14 @@ set(SRC_FILES
 "${SRC_DIR}/expression_info.cpp"
 "${SRC_DIR}/statement_info.cpp"
 "${SRC_DIR}/stmt_expr_cast.cpp"
+"${SRC_DIR}/llvm+.cpp"
+"${SRC_DIR}/marker_generator.cpp"
+"${SRC_DIR}/marker_parser.cpp"
+
 )
 
 add_executable(ul ${SRC_FILES} ${CONSOLE_INC_DIR} ${TOKENS_INC_DIR} ${LLVMIR_INC_DIR} ${TOKENS_SRC_DIR})
+
 
 target_include_directories(ul PUBLIC ${LLVMIR_INC_DIR})
 target_include_directories(ul PUBLIC ${CORE_INCLUDE})

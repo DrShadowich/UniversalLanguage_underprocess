@@ -4,7 +4,7 @@
 #include <regex>
 namespace ul::token
 {
-	enum class TID : short
+	enum class TID : uint16_t
 	{
 		NO_TOKEN = 0,
 		// \n
@@ -25,6 +25,10 @@ namespace ul::token
 		RBRACKET,
 		// +
 		PLUS_OPERATOR,
+		// ++
+		INCREMENT_OPERATOR,
+		// --
+		DECREMENT_OPERATOR,
 		// -
 		MINUS_OPERATOR,
 		// *
@@ -33,6 +37,14 @@ namespace ul::token
 		SLASH_OPERATOR,
 		// =
 		ASSIGNMENT_OPERATOR,
+		// +=
+		PLUS_ASSIGNMENT_OPERATOR,
+		// -=
+		MINUS_ASSIGNMENT_OPERATOR,
+		// /=
+		SLASH_ASSIGNMENT_OPERATOR,
+		// *=
+		STAR_ASSIGNMENT_OPERATOR,
 		// ;
 		SEMICOLON,
 		// {
@@ -77,8 +89,8 @@ namespace ul::token
 		KEYWORD_CLASS,
 		// immut
 		KEYWORD_IMMUT,
-		// using
-		KEYWORD_USING,
+		// insert
+		KEYWORD_INSERT,
 		// ref
 		KEYWORD_REF,
 		// const
@@ -143,8 +155,17 @@ namespace ul::token
 		POINTER,
 		END,
 	};
-	using TID = TID;
-	
+
+	enum MARKER_ID : uint16_t 
+	{
+		CONFIG,
+		PYTHON,
+		LUA,
+		CPP,
+		C,
+	};
+	using MID = MARKER_ID;
+
 	struct token_type
 	{
 		std::unique_ptr<std::string> token_pattern{};

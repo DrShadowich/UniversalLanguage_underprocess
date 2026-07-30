@@ -1,4 +1,5 @@
 #include <simple_variable.h>
+#include <core_exceptions.h>
 namespace ul::utils
 {
 	size_t detail::get_type_and_name_delimeter(std::string_view name)
@@ -25,5 +26,43 @@ namespace ul::utils
 	bool has_type(std::string_view name)
 	{
 		return name.find_last_of('_') != std::string::npos;
+	}
+
+	std::string get_string_literal(std::string literal)
+	{
+		std::string ret;
+		for (size_t i{ 0 }, lsize = literal.size(); i < lsize; ++i)
+		{
+			if (literal[i] == '\\' && (i + 1) < lsize)
+			{
+				switch (literal[i + 1])
+				{
+				case 'n':
+					ret += '\n';
+					break;
+				case 't':
+					ret += '\t';
+					break;
+				case '\\':
+					ret += '\\';
+					break;
+				case '\"':
+					ret += '"';
+					break;
+				case '\'':
+					ret += '\'';
+					break;
+				default:
+					PARSER_EXCEPTION(std::format("Unknown escape sequence: \\{}", literal[i + 1]));
+				}
+				++i;
+			}
+			else
+				ret	+= literal[i];
+		}
+		std::string_view sv{ ret };
+		sv.remove_prefix(1);
+		sv.remove_suffix(1);
+		return static_cast<std::string>(sv);
 	}
 }

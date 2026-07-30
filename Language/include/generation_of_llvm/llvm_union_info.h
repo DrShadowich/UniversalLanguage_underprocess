@@ -24,8 +24,6 @@ namespace ul::codegen
 		llvm_aligned_type aligned_type;
 		llvm::Constant* constant;
 		llvm::AllocaInst* alloca_instance;
-		std::vector<llvm::Argument*>* param_list;
-		std::vector<llvm::Value*>* args_list;
 		llvm_union()
 		{}
 	};

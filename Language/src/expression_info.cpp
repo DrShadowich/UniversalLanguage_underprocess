@@ -45,8 +45,8 @@ namespace ul::expr
 	string_literal_node::string_literal_node(const std::string& lexeme_) : literal{ lexeme_ }
 	{}
 
-	binary_operator_node::binary_operator_node(token::token_info& operator_, expr_node_ptr left_, expr_node_ptr right_) :
-		op{ operator_ }, left{ std::move(left_) }, right{ std::move(right_) }
+	binary_operator_node::binary_operator_node(token::token_type operator_, expr_node_ptr left_, expr_node_ptr right_) :
+		op{ std::move(operator_) }, left{ std::move(left_) }, right{ std::move(right_) }
 	{}
 
 	unary_operator_node::unary_operator_node(token::token_info operator_, expr_node_ptr child_) :
@@ -125,6 +125,10 @@ namespace ul::expr
 
 	variable_reference_node::variable_reference_node(variable_node_ptr var) :
 		variable{ std::move(var) }
+	{}
+
+	variable_assignment_expr::variable_assignment_expr(variable_node_ptr var, expr_node_ptr right_expression) :
+		binary_operator_node{ ul::dictionaries::language_dictionary::match_pattern("="), std::move(var), std::move(right_expression) }
 	{}
 
 	std::string get_type_of_expression(expr_node& expression)

@@ -4,14 +4,14 @@
 #define LEXER	ul::lexer::
 
 LEXER language_lexer::language_lexer(std::string input) :
-	input_information_{ std::move(input) }, tokenizer_{ std::move(utils::separator{ " \t\r", "!()/+-*:;{},.\n" }) }
+	input_information_{ std::move(input) }, tokenizer_{ std::move(utils::separator{ " \t\r", "!():;{},.\n" }) }
 {
 	get_tokens();
 	ready_tokens_.emplace_back("", token::token_type{ token::TID::END, "END", "" });
 }
 
 LEXER language_lexer::language_lexer() :
-	input_information_{ "" }, tokenizer_{ std::move(utils::separator{ " \t\r", "()/+-*:;{},.\n" }) }
+	input_information_{ "" }, tokenizer_{ std::move(utils::separator{ " \t\r", "!():;{},.\n" }) }
 {}
 
 std::string LEXER language_lexer::get_input_information()

@@ -13,4 +13,14 @@ namespace ul::utils
 	{
 		return starts_with(symbol, lexeme) && end_with(symbol, lexeme);
 	}
+	std::string trim(std::string_view lexeme)
+	{
+		std::string result;
+		for(char symbol : lexeme)
+		{
+			if (not std::isspace(static_cast<unsigned char>(symbol)))
+				result += symbol;
+		}
+		return result;
+	}
 }

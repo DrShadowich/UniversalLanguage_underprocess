@@ -7,7 +7,7 @@
 #define STMT	ul::stmt::
 
 PARSER	language_parser::language_parser(lexer::language_lexer& l) :
-	lexer_{ l }, source_manager_{ std::move(l.get_input_information()) }, parser_ctx_{ }
+	lexer_{ l }, source_manager_{ std::move(l.get_input_information()) }, pctx_{ std::make_unique<parser_context>() }
 {}
 
 uint32_t PARSER	language_parser::lbp(token::token_type& tt)
@@ -19,6 +19,10 @@ uint32_t PARSER	language_parser::lbp(token::token_type& tt)
 	case TID::LOGICAL_OR_OPERATOR:
 		return 1;
 	case TID::ASSIGNMENT_OPERATOR:
+	case TID::PLUS_ASSIGNMENT_OPERATOR:
+	case TID::MINUS_ASSIGNMENT_OPERATOR:
+	case TID::SLASH_ASSIGNMENT_OPERATOR:
+	case TID::STAR_ASSIGNMENT_OPERATOR:
 		return 2;
 	case TID::PLUS_OPERATOR:
 	case TID::MINUS_OPERATOR:
@@ -52,28 +56,33 @@ bool PARSER	language_parser::is_expression_start(const token::token_type& tt)
 	case TID::MARKER_EXPRESSION:
 	case TID::TRIPLE_POINT:
 	case TID::LOGICAL_NOT_OPERATOR:
+	case TID::KEYWORD_BREAK:
+	case TID::KEYWORD_CONTINUE:
 		return true;
 	default:
 		return false;
 	}
 }
 
-STMT else_statement_ptr PARSER language_parser::parse_else_statement()
+STMT statement_ptr PARSER language_parser::parse_inner_statement()
 {
-	stmt::else_statement_ptr else_stmt{ nullptr };
+	stmt::statement_ptr inner_stmt{ nullptr };
 	if (lexer_.not_expect(token::TID::FLBRACKET))
 	{
-		auto return_block = std::make_unique<stmt::expression_statement>(expression(0));
-		else_stmt = std::make_unique<stmt::else_statement>(std::move(return_block));
+		inner_stmt = std::make_unique<stmt::expression_statement>(expression(0));
 		if (lexer_.not_expect(token::TID::SEMICOLON))
-			OUT_PARSER_EXCEPTION("Expected \';\' after one line then statement");
+			OUT_PARSER_EXCEPTION("Expected \';\' after expression");
 		lexer_.next();
 	}
 	else
-	{
-		auto return_block = parse_block_statement();
-		else_stmt = std::make_unique<stmt::else_statement>(std::move(return_block));
-	}
+		inner_stmt = parse_block_statement();
+	return inner_stmt;
+}
+
+STMT else_statement_ptr PARSER language_parser::parse_else_statement()
+{
+	stmt::else_statement_ptr else_stmt = 
+		std::make_unique<stmt::else_statement>(parse_inner_statement());
 	return else_stmt;
 }
 
@@ -146,6 +155,7 @@ STMT statement_ptr PARSER language_parser::parse_function_definition()
 		OUT_PARSER_EXCEPTION("UL doesn\'t support forward-declaration");
 
 	// function_name(params){ ... }
+
 	else if (lexer_.not_expect(token::TID::FLBRACKET))
 	{
 		if (lexer_.expect(token::TID::END))
@@ -153,9 +163,10 @@ STMT statement_ptr PARSER language_parser::parse_function_definition()
 	}
 	else if (lexer_.expect(token::TID::FLBRACKET))
 	{
+		pctx_->in_function = true;
 		// inserting function
 		function_definition->function->name = function_table_.insert_function(*function_definition);
-		parser_ctx_.current_function = function_definition.release();
+		pctx_->current_function = function_definition.release();
 		//
 		lexer_.next();
 		auto block = std::make_unique<stmt::block_statement>();
@@ -165,10 +176,11 @@ STMT statement_ptr PARSER language_parser::parse_function_definition()
 			stmt::statement_ptr stmt = parse_statement();
 			if (auto* b = ul::dyn_cast<stmt::return_statement>(stmt.get()))
 			{
-				if (parser_ctx_.current_function->function_type->type_str != b->type_str && not parser_ctx_.current_function->function_type->type_str.empty())
-					OUT_PARSER_EXCEPTION(std::format("Type {} isn\'t type of {}", b->type_str, parser_ctx_.current_function->function_type->type_str));
-				function_table_.set_functions_return_type(&parser_ctx_.current_function->function->name->full_name, b->type_str);
-				parser_ctx_.current_function->function_type =
+				if (pctx_->current_function->function_type->type_str != b->type_str && not pctx_->current_function->function_type->type_str.empty())
+					OUT_PARSER_EXCEPTION(std::format("Type {} isn\'t type of {}", b->type_str, pctx_->current_function->function_type->type_str));
+				function_table_.
+					set_functions_return_type(&pctx_->current_function->function->name->full_name, b->type_str);
+				pctx_->current_function->function_type =
 					std::make_unique<expr::type_node>(std::move(b->type_str));
 			}
 			block->statements.emplace_back(std::move(stmt));
@@ -177,7 +189,8 @@ STMT statement_ptr PARSER language_parser::parse_function_definition()
 		if (lexer_.not_expect(token::TID::FRBRACKET))
 			OUT_PARSER_EXCEPTION("Expected \'}\' to close function definition");
 		lexer_.next();
-		function_definition.reset(parser_ctx_.current_function);
+		function_definition.reset(pctx_->current_function);
+		pctx_->in_function = false;
 		return std::make_unique<stmt::function_definition>(std::move(function_definition), std::move(block));
 	}
 	else
@@ -221,26 +234,12 @@ STMT extern_function_declaration_ptr PARSER language_parser::parse_extern_functi
 		OUT_PARSER_EXCEPTION("Unexpected token after declaration");
 }
 
-STMT assignment_statement_ptr PARSER language_parser::parse_assignment(std::string variable_name)
-{
-	if (lexer_.not_expect(token::TID::ASSIGNMENT_OPERATOR))
-		OUT_PARSER_EXCEPTION("Expected assignment operator");
-	lexer_.next();
-	auto&& value_expr = expression(0);
-	if (lexer_.expect(token::TID::SEMICOLON))
-	{
-		lexer_.next();
-		return std::make_unique<stmt::assignment_statement>(std::move(variable_name), std::move(value_expr));
-	}
-	else
-		OUT_PARSER_EXCEPTION("Expected \';\' after assignment statement");
-}
-
 STMT block_statement_ptr PARSER language_parser::parse_block_statement()
 {
 	if (lexer_.not_expect(token::TID::FLBRACKET))
 		OUT_PARSER_EXCEPTION("Expected \'{\' for block statement");
 	lexer_.next();
+	++pctx_->block_depth;
 	auto block = std::make_unique<stmt::block_statement>();
 	while (lexer_.not_expect(token::TID::FRBRACKET) &&
 		lexer_.not_expect(token::TID::END))
@@ -248,12 +247,12 @@ STMT block_statement_ptr PARSER language_parser::parse_block_statement()
 		auto stmt = parse_statement();
 		if (auto* b = ul::dyn_cast<stmt::return_statement>(stmt.get()))
 		{
-			if (!parser_ctx_.current_function)
+			if (!pctx_->current_function)
 				OUT_PARSER_EXCEPTION("keyword \'return\' out of function");
-			if (parser_ctx_.current_function->function_type->type_str != b->type_str && not parser_ctx_.current_function->function_type->type_str.empty())
-				OUT_PARSER_EXCEPTION(std::format("Type {} isn\'t type of {}", b->type_str, parser_ctx_.current_function->function_type->type_str));
-			function_table_.set_functions_return_type(&parser_ctx_.current_function->function->name->full_name, b->type_str);
-			parser_ctx_.current_function->function_type =
+			if (pctx_->current_function->function_type->type_str != b->type_str && not pctx_->current_function->function_type->type_str.empty())
+				OUT_PARSER_EXCEPTION(std::format("Type {} isn\'t type of {}", b->type_str, pctx_->current_function->function_type->type_str));
+			function_table_.set_functions_return_type(&pctx_->current_function->function->name->full_name, b->type_str);
+			pctx_->current_function->function_type =
 				std::make_unique<expr::type_node>(std::move(b->type_str));
 		}
 		block->statements.emplace_back(std::move(stmt));
@@ -262,19 +261,127 @@ STMT block_statement_ptr PARSER language_parser::parse_block_statement()
 	if (lexer_.not_expect(token::TID::FRBRACKET))
 		OUT_PARSER_EXCEPTION("Expected \'}\' to close block");
 	lexer_.next();
+	pctx_->current_names.clear();
+	--pctx_->block_depth;
 	return block;
+}
+
+std::vector<EXPR variable_assignment_expr_ptr> PARSER language_parser::parse_value_definitions()
+{
+	std::vector<expr::variable_assignment_expr_ptr> result;
+	while(lexer_.not_expect(token::TID::SEMICOLON))
+	{
+		auto&& expr = expression(0);
+		if (lexer_.not_expect(token::TID::COMMA) && lexer_.not_expect(token::TID::SEMICOLON))
+			OUT_PARSER_EXCEPTION("Expected \",\" or \";\" to end expression or definitions");
+		if (lexer_.expect(token::TID::COMMA))
+			lexer_.next();
+		if (auto* assign = ul::dyn_cast<expr::variable_assignment_expr>(expr.release()))
+			result.emplace_back(assign);
+		else
+			OUT_PARSER_EXCEPTION("Need assignment expression");
+	}
+	return result;
+}
+std::vector<EXPR expr_node_ptr> PARSER language_parser::parse_value_differences()
+{
+	std::vector<expr::expr_node_ptr> result;
+	while (lexer_.not_expect(token::TID::RBRACKET))
+	{
+		auto&& expr = expression(0);
+		if (lexer_.not_expect(token::TID::COMMA) && lexer_.not_expect(token::TID::RBRACKET))
+			OUT_PARSER_EXCEPTION("Expected \",\" or \")\" to end expression or definitions");
+		if (lexer_.expect(token::TID::COMMA))
+			lexer_.next();
+		result.emplace_back(std::move(expr));
+	}
+	return result;
 }
 
 STMT statement_ptr PARSER language_parser::parse_statement()
 {
 	if (lexer_.expect(token::TID::KEYWORD_ELIF))
-		OUT_PARSER_EXCEPTION("Keyword \"elif\" doesn\'t refer to \'if\'");
+		OUT_PARSER_EXCEPTION("Keyword \"elif\" doesn\'t refer to \"if\"");
 	if(lexer_.expect(token::TID::KEYWORD_ELSE))
-		OUT_PARSER_EXCEPTION("Keyword \"else\" doesn\'t refer to \'if\'");
+		OUT_PARSER_EXCEPTION("Keyword \"else\" doesn\'t refer to \"if\"");
 	// extern function_name(params) -> _type; || extern function_name(params);
 	if (lexer_.expect(token::TID::KEYWORD_EXTERN))
 		return parse_extern_function();
 
+	else if(lexer_.expect(token::TID::MARKER_EXPRESSION))
+	{
+		std::string lexeme = std::move(lexer_.front()->lexeme);
+		lexer_.next();
+		return marker_parser_->parse_marker(std::move(lexeme));
+	}
+
+	else if(lexer_.expect(token::TID::KEYWORD_INSERT))
+	{
+		lexer_.next();
+		auto&& file_name = expression(0);
+		if (auto* fn = ul::dyn_cast<expr::string_literal_node>(file_name.get()))
+			return std::make_unique<stmt::insert_statement>(std::move(utils::get_string_literal(fn->literal)));
+		else
+			OUT_PARSER_EXCEPTION("Inserting file requires file name");
+	}
+
+	else if(lexer_.expect(token::TID::KEYWORD_FOR))
+	{
+		++pctx_->loop_depth;
+		lexer_.next();
+		if (pctx_->loop_depth == 0)
+			OUT_PARSER_EXCEPTION("Depth of loop is lower then 0 (0_0)");
+		if (lexer_.not_expect(token::TID::LBRACKET))
+			OUT_PARSER_EXCEPTION("Expected \"(\" to start definition part");
+		lexer_.next();
+		auto&& definition = parse_value_definitions();
+		if (lexer_.not_expect(token::TID::SEMICOLON))
+			OUT_PARSER_EXCEPTION("Expected \";\" to end start definition part");
+		lexer_.next();
+		auto&& condition = expression(0);
+		if (lexer_.not_expect(token::TID::SEMICOLON))
+			OUT_PARSER_EXCEPTION("Expected \";\" to end condition part");
+		if (not ul::dyn_cast<expr::logical_binary_operator_node>(condition.get()))
+			OUT_PARSER_EXCEPTION("Expected logical expression");
+		lexer_.next();
+		auto&& after_iteration = parse_value_differences();
+		
+		if(lexer_.not_expect(token::TID::RBRACKET))
+			OUT_PARSER_EXCEPTION("Expected \")\" to end after_definition part");
+		lexer_.next();
+		
+		auto&& for_statement = std::make_unique<stmt::for_loop_statement>
+			(
+				parse_inner_statement(),
+				std::move(condition),
+				std::move(definition),
+				std::move(after_iteration)
+			);
+		--pctx_->loop_depth;
+		return for_statement;
+	}
+	else if (lexer_.expect(token::TID::KEYWORD_WHILE))
+	{
+		++pctx_->loop_depth;
+		lexer_.next();
+		auto&& condition = expression(0);
+		auto&& wloop_statement = std::make_unique<stmt::while_loop_statement>(parse_inner_statement(), std::move(condition));
+		if (pctx_->loop_depth == 0)
+			OUT_PARSER_EXCEPTION("Depth of loop is lower then 0 (0_0)");
+		--pctx_->loop_depth;
+		return wloop_statement;
+	}
+	else if (lexer_.expect(token::TID::KEYWORD_LOOP))
+	{
+		++pctx_->loop_depth;
+		lexer_.next();
+		auto&& loop_statement = std::make_unique<stmt::loop_statement>(parse_inner_statement());
+		if (pctx_->loop_depth == 0)
+			OUT_PARSER_EXCEPTION("Depth of loop is lower then 0 (0_0)");
+		--pctx_->loop_depth;
+		return loop_statement;
+	}
+	
 	// { ... }
 	else if (lexer_.expect(token::TID::FLBRACKET))
 		return parse_block_statement();
@@ -294,6 +401,7 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 
 	else if(lexer_.expect(token::TID::KEYWORD_IF))
 	{
+		pctx_->in_if_statement = true;
 		lexer_.next();
 		auto condition = expression(0);
 		stmt::if_statement_ptr if_stmt = parse_if_statement<stmt::if_statement>(std::move(condition));
@@ -303,7 +411,7 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 			lexer_.expect(token::TID::KEYWORD_ELSE)) 
 		{
 			if (lexer_.expect(token::TID::KEYWORD_ELSE) && was_else)
-				OUT_PARSER_EXCEPTION("else can be used once");
+				OUT_PARSER_EXCEPTION("Keyword \'else\' can\'t be used once");
 			if (was_else)
 				OUT_PARSER_EXCEPTION("Unhandled operation: elif after else");
 
@@ -328,6 +436,7 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 		}
 		
 		if_stmt->next_cond_stmt = stmt::reverse_if_statements_list(std::move(else_stmt));
+		pctx_->in_if_statement = false;
 		return if_stmt;
 	}
 
@@ -337,27 +446,6 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 		return parse_function_definition();
 	}
 	// Bad
-	// name_type = expr; || name_type.something;
-	else if (lexer_.expect(token::TID::VARIABLE_IDENTIFIER))
-	{
-		std::string var_name = lexer_.front()->lexeme;
-		auto&& parent = nud(*lexer_.front());
-		lexer_.next();
-		// name_type = expr;
-		if (lexer_.expect(token::TID::ASSIGNMENT_OPERATOR))
-			return parse_assignment(std::move(var_name));
-		// name_type;
-		else if (lexer_.expect(token::TID::SEMICOLON))
-		{
-			lexer_.next();
-			return std::make_unique<stmt::expression_statement>(nud(*lexer_.front()));
-		}
-		// name_type...;
-		else if (lexer_.expect(token::TID::POINT))
-			return std::make_unique<stmt::expression_statement>(std::move(parse_field_call(std::move(parent))));
-		else
-			OUT_PARSER_EXCEPTION("Variable has no purpose");
-	}
 	// expressions
 	else if (is_expression_start(lexer_.front()->type))
 		return std::make_unique<stmt::expression_statement>(expression(0));
@@ -368,25 +456,7 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 EXPR field_call_node_ptr PARSER language_parser::parse_field_call(expr::expr_node_ptr parent)
 {
 	expr::field_call_node_ptr field{ nullptr };
-	// Переделать
-#if 0
-	while (lexer_.expect(token::TID::POINT))
-	{
-		lexer_.next();
-		if (lexer_.not_expect(token::TID::VARIABLE_IDENTIFIER) &&
-			lexer_.not_expect(token::TID::FUNCTION_IDENTIFIER)
-			)
-		{
-			OUT_PARSER_EXCEPTION("Expected some field after \'.\'");
-		}
-		auto&& field_n = expression(0);
-		lexer_.next();
 
-		field = field ? std::make_unique<expr::field_call_node>(std::move(parent), std::move(field_n), std::move(field)) :
-			std::make_unique<expr::field_call_node>(std::move(parent), std::move(field_n));
-		parent = std::move(field);
-	}
-#endif
 	return field;
 }
 
@@ -400,7 +470,13 @@ EXPR function_arguments_node_ptr PARSER language_parser::parse_arguments()
 	{
 		if (lexer_.expect(token::TID::END))
 			OUT_PARSER_EXCEPTION("Unexpected EOF in argument list");
-		args->args.emplace_back(std::move(expr::make_argument(expression(0))));
+		auto&& arg = expr::make_argument(expression(0));
+		if(auto* var = ul::dyn_cast<expr::variable_node>(arg->value.get()))
+		{
+			if (not pctx_->current_names.contains(var->name))
+				OUT_PARSER_EXCEPTION("Variable doesn\'t exsist");
+		}
+		args->args.emplace_back(std::move(arg));
 		if (lexer_.expect(token::TID::COMMA))
 			lexer_.next();
 	}
@@ -439,6 +515,16 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 	expr::expr_node_ptr left;
 	switch (ti.type)
 	{
+	case TID::KEYWORD_BREAK:
+		if (pctx_->loop_depth == 0)
+			OUT_PARSER_EXCEPTION("Keyword \"break\" only avaliable in loop statement");
+		left = std::make_unique<expr::break_node>();
+		break;
+	case TID::KEYWORD_CONTINUE:
+		if (pctx_->loop_depth == 0)
+			OUT_PARSER_EXCEPTION("Keyword \"continue\" only avaliable in loop statement");
+		left = std::make_unique<expr::continue_node>();
+		break;
 	case TID::TRIPLE_POINT:
 		left = std::make_unique<expr::function_with_va_args_node>();
 		break;
@@ -460,39 +546,14 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 	case TID::STRING_LITERAL:
 	{
 		std::string string_literal;
-		for (size_t i{ 0 }, lsize = ti.lexeme.size(); i < lsize; ++i)
+		try
 		{
-			if (ti.lexeme[i] == '\\' && (i + 1) < lsize)
-			{
-				switch (ti.lexeme[i + 1])
-				{
-				case 'n':
-					string_literal += '\n';
-					break;
-				case 't':
-					string_literal += '\t';
-					break;
-				case '\\':
-					string_literal += '\\';
-					break;
-				case '\"':
-					string_literal += '"';
-					break;
-				case '\'':
-					string_literal += '\'';
-					break;
-				default:
-					OUT_PARSER_EXCEPTION(std::format("Unknown escape sequence: \\{}", ti.lexeme[i + 1]));
-				}
-				++i;
-			}
-			else
-				string_literal += ti.lexeme[i];
+			string_literal = utils::get_string_literal(std::move(ti.lexeme));
 		}
-		std::string_view sv{ string_literal };
-		sv.remove_prefix(1);
-		sv.remove_suffix(1);
-		string_literal = std::move(std::string{ sv });
+		catch(ul::ex::parser_exception& pex)
+		{
+			OUT_PARSER_EXCEPTION(pex.what());
+		}
 		left = std::make_unique<expr::string_literal_node>(std::move(string_literal));
 		break;
 	}
@@ -506,61 +567,45 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 	}
 	case TID::LBRACKET:
 	{
+		++pctx_->bracket_depth;
+		if (pctx_->bracket_depth >= 256)
+			OUT_PARSER_EXCEPTION("Limit of \'(\' (255 lbrackets) was reached");
 		auto inner = expression(0);
 		if (lexer_.not_expect(token::TID::RBRACKET))
 			OUT_PARSER_EXCEPTION("Expected \')\'");
 		lexer_.next();
 		left = std::move(inner);
+		--pctx_->bracket_depth;
 		break;
 	}
 	case TID::KEYWORD_REF:
 	{
-		if (lexer_.expect(TID::VARIABLE_IDENTIFIER))
-		{
-			auto&& var = std::make_unique<expr::variable_node>(lexer_.front()->lexeme);
-			left = std::make_unique<expr::variable_reference_node>(std::move(var));
-			lexer_.next();
-		}
-		else
+		if (lexer_.not_expect(TID::VARIABLE_IDENTIFIER))
 			OUT_PARSER_EXCEPTION("Expected variable after keyword \"ref\"");
-		break;
+		
+		auto&& var = std::make_unique<expr::variable_node>(lexer_.front()->lexeme);
+		if (!pctx_->current_names.contains(var->name))
+			OUT_PARSER_EXCEPTION("Variable doesn\'t exsist");
 
+		left = std::make_unique<expr::variable_reference_node>(std::move(var));
+		lexer_.next();
+		break;
 	}
 	case TID::VARIABLE_IDENTIFIER:
-		left = std::make_unique<expr::variable_node>(ti.lexeme);
+		left = std::make_unique<expr::variable_node>(std::move(ti.lexeme));
 		break;
 	case TID::FUNCTION_IDENTIFIER:
 	{
-		expr::function_node_ptr fn_node = std::make_unique<expr::function_node>(ti.lexeme);
+		expr::function_node_ptr fn_node = std::make_unique<expr::function_node>(std::move(ti.lexeme));
 		if (lexer_.expect(token::TID::LBRACKET))
 			left = get_function_call_node(std::move(fn_node), parse_arguments());
 		else
 			left = std::move(fn_node);
 		break;
 	}
-	case TID::MARKER_EXPRESSION:
-		left = std::make_unique<expr::marker_node>(std::move(ti));
-		break;
 	default:
-		OUT_PARSER_EXCEPTION("Unexpected token");
+		OUT_PARSER_EXCEPTION(std::format("Word {} is unexpected", ti.lexeme));
 	}
-#if 0
-	for (;;)
-	{
-		if (lexer_.not_expect(token::TID::POINT))
-			break;
-		lexer_.next();
-		if (lexer_.not_expect(TID::VARIABLE_IDENTIFIER) &&
-			lexer_.not_expect(TID::FUNCTION_IDENTIFIER)
-			)
-		{
-			OUT_PARSER_EXCEPTION("Expected some field after \'.\'");
-		}
-		auto&& field_n = expression(0);
-		lexer_.next();
-		left = std::make_unique<expr::field_call_node>(std::move(left), std::move(field_n));
-	}
-#endif
 	return left;
 }
 EXPR expr_node_ptr PARSER language_parser::led(token::token_info& ti, expr::expr_node_ptr left)
@@ -570,6 +615,34 @@ EXPR expr_node_ptr PARSER language_parser::led(token::token_info& ti, expr::expr
 	auto&& right = expression(right_binding_priority);
 	switch (ti.type)
 	{
+	case TID::ASSIGNMENT_OPERATOR:
+	{
+		if (auto* lhsp = ul::dyn_cast<expr::variable_node>(left.release()))
+		{
+			auto&& lhs = expr::variable_node_ptr{ lhsp };
+			if (!pctx_->current_names.contains(lhs->name))
+				pctx_->current_names.insert(lhs->name);
+			return std::make_unique<expr::variable_assignment_expr>(std::move(lhs), std::move(right));
+		}
+		else
+			OUT_PARSER_EXCEPTION("Left operand isn\'t variable");
+	}
+	case TID::PLUS_ASSIGNMENT_OPERATOR:
+	case TID::MINUS_ASSIGNMENT_OPERATOR:
+	case TID::STAR_ASSIGNMENT_OPERATOR:
+	case TID::SLASH_ASSIGNMENT_OPERATOR:
+	{
+		if (auto* lhsp = ul::dyn_cast<expr::variable_node>(left.release()))
+		{
+			auto&& lhs = expr::variable_node_ptr{ lhsp };
+			if (!pctx_->current_names.contains(lhs->name))
+				OUT_PARSER_EXCEPTION(std::format("Variable {} doesn\'t exsist", lhs->name));
+			return std::make_unique <expr::variable_additional_assignment_expr>
+				(std::move(ti.type), std::move(lhs), std::move(right));
+		}
+		else
+			OUT_PARSER_EXCEPTION("Left operand isn\'t variable");
+	}
 	case TID::LOGICAL_AND_OPERATOR:
 	case TID::LOGICAL_OR_OPERATOR:
 	case TID::LOGICAL_EQUAL_OPERATOR:
@@ -578,9 +651,19 @@ EXPR expr_node_ptr PARSER language_parser::led(token::token_info& ti, expr::expr
 	case TID::LOGICAL_GREATER_OR_EQUAL_OPERATOR:
 	case TID::LOGICAL_LESS_OPERATOR:
 	case TID::LOGICAL_LESS_OR_EQUAL_OPERATOR:
-		return std::make_unique<expr::logical_binary_operator_node>(ti, std::move(left), std::move(right));
+		if (auto* lhsp = ul::dyn_cast<expr::variable_node>(left.get()))
+		{
+			if (!pctx_->current_names.contains(lhsp->name))
+				OUT_PARSER_EXCEPTION(std::format("Variable {} doesn\'t exsist", lhsp->name));
+		}
+		return std::make_unique<expr::logical_binary_operator_node>(std::move(ti.type), std::move(left), std::move(right));
 	default:
-		return std::make_unique<expr::binary_operator_node>(ti, std::move(left), std::move(right));
+		if (auto* lhsp = ul::dyn_cast<expr::variable_node>(left.get()))
+		{
+			if (!pctx_->current_names.contains(lhsp->name))
+				OUT_PARSER_EXCEPTION(std::format("Variable {} doesn\'t exsist", lhsp->name));
+		}
+		return std::make_unique<expr::binary_operator_node>(std::move(ti.type), std::move(left), std::move(right));
 	}
 }
 EXPR expr_node_ptr PARSER language_parser::expression(uint32_t right_binding_priority)
@@ -588,7 +671,7 @@ EXPR expr_node_ptr PARSER language_parser::expression(uint32_t right_binding_pri
 	auto&& cur = lexer_.front();
 	if (lexer_.is_now_break_symbol())
 	{
-		OUT_PARSER_EXCEPTION("Empty expression");
+		OUT_PARSER_EXCEPTION("Expression is empty");
 	}
 	lexer_.next();
 	auto&& left = nud(*cur);

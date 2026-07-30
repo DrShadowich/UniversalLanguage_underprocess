@@ -61,10 +61,10 @@ namespace ul::expr
 	
 	struct binary_operator_node : public expr_node
 	{
-		token::token_info op;
+		token::token_type op;
 		expr_node_ptr left;
 		expr_node_ptr right;
-		explicit binary_operator_node(token::token_info& operator_, expr_node_ptr left_, expr_node_ptr right_);
+		explicit binary_operator_node(token::token_type operator_, expr_node_ptr left_, expr_node_ptr right_);
 	};
 	using binary_operator_node_ptr = std::unique_ptr<binary_operator_node>;
 
@@ -138,8 +138,9 @@ namespace ul::expr
 	};
 	using function_arguments_node_ptr = std::unique_ptr<function_arguments_node>;
 
-	struct newline_node : public expr_node
-	{};
+	struct newline_node : public expr_node{};
+	struct break_node : public expr_node{};
+	struct continue_node : public expr_node{};
 	
 	struct marker_node : public expr_node
 	{
@@ -195,6 +196,15 @@ namespace ul::expr
 	};
 	using variable_reference_node_ptr = std::unique_ptr<variable_reference_node>;
 
+	struct variable_assignment_expr : public binary_operator_node
+	{
+		explicit variable_assignment_expr(variable_node_ptr var, expr_node_ptr right_expression);
+	};
+	struct variable_additional_assignment_expr : public binary_operator_node
+	{
+		using binary_operator_node::binary_operator_node;
+	};
+	using variable_assignment_expr_ptr = std::unique_ptr<variable_assignment_expr>;
 	// Get type if expression is var, string lexeme, number lexeme.
 	std::string get_type_of_expression(expr_node& expression);
 	expr::argument_node_ptr make_argument(expr_node_ptr expression);

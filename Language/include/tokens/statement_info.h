@@ -118,5 +118,72 @@ namespace ul::stmt
 	};
 	using if_statement_ptr = std::unique_ptr<if_statement>;
 
+	struct loop_statement : public statement
+	{
+		statement_ptr inner_stmt;
+		explicit loop_statement(loop_statement&&) = default;
+		explicit loop_statement(std::unique_ptr<loop_statement> loop_ptr) :
+			loop_statement{ std::move(*loop_ptr) }
+		{}
+		explicit loop_statement(statement_ptr basic_block) :
+			inner_stmt{ std::move(basic_block) }
+		{}
+	};
+	using loop_statement_ptr = std::unique_ptr<loop_statement>;
+
+	struct while_loop_statement : public loop_statement
+	{
+		expr::expr_node_ptr condition_expr;
+		explicit while_loop_statement(while_loop_statement&&) = default;
+		explicit while_loop_statement(std::unique_ptr<while_loop_statement> wloop_ptr) :
+			while_loop_statement{ std::move(*wloop_ptr) }
+		{}
+		explicit while_loop_statement(statement_ptr basic_block, expr::expr_node_ptr condition = nullptr) :
+			condition_expr{ std::move(condition) }, loop_statement{ std::move(basic_block) }
+		{}
+		explicit while_loop_statement(loop_statement_ptr loop) :
+			condition_expr{ nullptr }, loop_statement{ std::move(loop) }
+		{}
+	};
+	using while_loop_statement_ptr = std::unique_ptr<while_loop_statement>;
+
+	struct for_loop_statement : public while_loop_statement
+	{
+		std::vector<expr::variable_assignment_expr_ptr> value_definitions{};
+		std::vector<expr::expr_node_ptr> value_interactions{};
+		explicit for_loop_statement(statement_ptr basic_block,
+			expr::expr_node_ptr condition = nullptr,
+			std::vector<expr::variable_assignment_expr_ptr> value_defs = {},
+			std::vector<expr::expr_node_ptr> value_inters = {}) :
+			value_definitions{ std::move(value_defs) }, 
+			value_interactions{ std::move(value_inters) },
+			while_loop_statement{ std::move(basic_block), std::move(condition) }
+		{}
+		explicit for_loop_statement(while_loop_statement_ptr wloop) :
+			value_definitions{}, value_interactions{}, while_loop_statement{ std::move(wloop) }
+		{}
+	};
+	using for_loop_statement_ptr = std::unique_ptr<for_loop_statement>;
+
+	struct insert_statement : public statement
+	{
+		std::string file_name;
+		explicit insert_statement(std::string filen) :
+			file_name{ std::move(filen) }
+		{}
+	};
+	using insert_statement_ptr = std::unique_ptr<insert_statement>;
+	struct marker_statement : public statement
+	{
+		std::string header;
+		std::string body;
+		std::string footer;
+		ul::token::MID marker_type;
+		explicit marker_statement(std::string head, std::string bod, std::string foot, ul::token::MID mid) :
+			header{ std::move(head) }, body{ std::move(bod) }, footer{ std::move(foot) }, marker_type{ mid }
+		{}
+	};
+	using marker_statement_ptr = std::unique_ptr<marker_statement>;
+
 	else_statement_ptr reverse_if_statements_list(else_statement_ptr root);
 }
