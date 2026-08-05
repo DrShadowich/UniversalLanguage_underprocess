@@ -25,4 +25,6 @@ namespace ul::codegen
 	// 2. else
 	// 3. merge
 	detail::trio_blocks make_then_blocks(llvm::LLVMContext& ctx, llvm::Function* parent, std::string name = "");
+
+	llvm::Value* create_string(llvm::Module& mod_, llvm::IRBuilder<>& builder, llvm::LLVMContext& ctx, std::string cpp_string);
 }

@@ -15,7 +15,7 @@ namespace ul::parser
 	{
 		std::string last_expression_lexemes{};
 		expr::function_definition_node* current_function{ nullptr };
-		std::set<std::string> current_names{};
+		std::unordered_map<std::string, uint32_t> current_names{};
 		bool in_function = false;
 		bool in_if_statement = false;
 		uint32_t loop_depth{ 0 };

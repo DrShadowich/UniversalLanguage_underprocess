@@ -11,6 +11,11 @@ namespace ul::ex
 		native_string();
 	}
 
+	void commander_exception::native_string()
+	{
+		message_ = std::format("Unhandled command: {}", message_);
+	}
+
 	void parser_exception::native_string()
 	{
 		message_ = std::format("File: {} in row: {}, col: {}\nSyntax error: {}", file_name_, file_code_line_, file_code_col_, message_);

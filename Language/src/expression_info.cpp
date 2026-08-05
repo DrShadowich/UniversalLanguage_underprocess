@@ -131,10 +131,26 @@ namespace ul::expr
 		binary_operator_node{ ul::dictionaries::language_dictionary::match_pattern("="), std::move(var), std::move(right_expression) }
 	{}
 
+	dynamic_malloc_expr::dynamic_malloc_expr(expr::expr_node_ptr rhs_) :
+		rhs{ std::move(rhs_) }
+	{}
+
+	dynamic_malloc_expr::dynamic_malloc_expr(expr::expr_node_ptr rhs_, bool is_single_) :
+		rhs{ std::move(rhs_) }, is_single{ is_single_ }
+	{}
+
+	nameof_expr::nameof_expr(variable_node_ptr var) :
+		variable{ std::move(var) }
+	{}
+
 	std::string get_type_of_expression(expr_node& expression)
 	{
 		auto* exptr = &expression;
 		if (auto* n = dynamic_cast<string_literal_node*>(exptr))
+		{
+			return "str";
+		}
+		else if(auto* n = dynamic_cast<nameof_expr*>(exptr))
 		{
 			return "str";
 		}

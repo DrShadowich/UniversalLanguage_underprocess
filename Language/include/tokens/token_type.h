@@ -23,6 +23,10 @@ namespace ul::token
 		LBRACKET,
 		// )
 		RBRACKET,
+		// [
+		SLBRACKET,
+		// ]
+		SRBRACKET,
 		// +
 		PLUS_OPERATOR,
 		// ++
@@ -73,6 +77,8 @@ namespace ul::token
 		KEYWORD_ENUM,
 		// else if (elif)
 		KEYWORD_ELIF,
+		// nameof
+		KEYWORD_NAMEOF,
 		// switch
 		KEYWORD_SWITCH,
 		// case
@@ -95,6 +101,8 @@ namespace ul::token
 		KEYWORD_REF,
 		// const
 		KEYWORD_CONST,
+		// new
+		KEYWORD_NEW,
 		// global
 		KEYWORD_GLOBAL,
 		// constexpr
@@ -156,15 +164,6 @@ namespace ul::token
 		END,
 	};
 
-	enum MARKER_ID : uint16_t 
-	{
-		CONFIG,
-		PYTHON,
-		LUA,
-		CPP,
-		C,
-	};
-	using MID = MARKER_ID;
 
 	struct token_type
 	{

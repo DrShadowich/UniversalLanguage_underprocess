@@ -45,4 +45,20 @@ namespace ul::codegen
 		llvm::BasicBlock::Create(ctx, name + "_else", parent),
 		llvm::BasicBlock::Create(ctx, name + "_merge", parent)};
 	}
+
+	llvm::Value* create_string(llvm::Module& mod_, llvm::IRBuilder<>& builder, llvm::LLVMContext& ctx, std::string cpp_string)
+	{
+		auto str_type = llvm::ArrayType::get(llvm::Type::getInt8Ty(ctx), cpp_string.size() + 1);
+		auto str_init = llvm::ConstantDataArray::getString(ctx, cpp_string);
+		auto literal_global = new llvm::GlobalVariable
+		{
+			mod_, str_type, true, llvm::GlobalValue::LinkageTypes::PrivateLinkage, str_init
+		};
+		literal_global->setUnnamedAddr(llvm::GlobalValue::UnnamedAddr::Global);
+
+		llvm::Value* idx0 = llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx), 0);
+		llvm::Value* indices[] = { idx0, idx0 };
+		llvm::Value* string_ptr = builder.CreateInBoundsGEP(str_type, literal_global, llvm::ArrayRef<llvm::Value*>(indices, 2));
+		return string_ptr;
+	}
 }

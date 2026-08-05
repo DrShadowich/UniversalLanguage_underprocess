@@ -15,6 +15,8 @@
 #define TOKENIZER_EXCEPTION(message)		(throw ULEX tokenizer_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 #define VISITOR_EXCEPTION(message)			(throw ULEX visitor_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
 #define NAMES_EXCEPTION(message)			(throw ULEX name_table_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
+#define COMMANDER_EXCEPTION(message)		(throw ULEX commander_exception{ (message), __LINE__, __FILE__, __FUNCTION__ })
+
 
 namespace ul::ex
 {
@@ -43,6 +45,14 @@ namespace ul::ex
 		{
 			return message_.c_str();
 		}
+	};
+
+	class commander_exception final : public ULEX exception
+	{
+	public:
+		using ULEX exception::exception;
+	protected:
+		virtual void native_string() override;
 	};
 
 	class parser_exception final : public ULEX exception

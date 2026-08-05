@@ -58,6 +58,7 @@ bool PARSER	language_parser::is_expression_start(const token::token_type& tt)
 	case TID::LOGICAL_NOT_OPERATOR:
 	case TID::KEYWORD_BREAK:
 	case TID::KEYWORD_CONTINUE:
+	case TID::KEYWORD_NEW:
 		return true;
 	default:
 		return false;
@@ -256,13 +257,21 @@ STMT block_statement_ptr PARSER language_parser::parse_block_statement()
 				std::make_unique<expr::type_node>(std::move(b->type_str));
 		}
 		block->statements.emplace_back(std::move(stmt));
+		block->statements.emplace_back(std::make_unique<stmt::end_of_block_statement>());
 		if (lexer_.expect(token::TID::SEMICOLON)) { lexer_.next(); }
 	}
 	if (lexer_.not_expect(token::TID::FRBRACKET))
 		OUT_PARSER_EXCEPTION("Expected \'}\' to close block");
 	lexer_.next();
-	pctx_->current_names.clear();
+
 	--pctx_->block_depth;
+	
+	for(auto it_beg = pctx_->current_names.begin(), it_end = pctx_->current_names.end(); it_beg != it_end; ++it_beg)
+	{
+		if (it_beg->second > pctx_->block_depth)
+			it_beg = pctx_->current_names.erase(it_beg);
+	}
+
 	return block;
 }
 
@@ -515,6 +524,26 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 	expr::expr_node_ptr left;
 	switch (ti.type)
 	{
+	case TID::KEYWORD_NAMEOF:
+	{
+		if (lexer_.not_expect(TID::LBRACKET))
+			OUT_PARSER_EXCEPTION("Expected \"(\" after keyword \"nameof\"");
+		lexer_.next();
+		auto name_expr = expression(0);
+		if (lexer_.not_expect(TID::RBRACKET))
+			OUT_PARSER_EXCEPTION("Expected \")\" after keyword \"nameof\"");
+		lexer_.next();
+		if (auto* var = ul::dyn_cast<expr::variable_node>(name_expr.release()))
+		{
+			if (not pctx_->current_names.contains(var->name))
+				OUT_PARSER_EXCEPTION("Variable doesn\'t exsist");
+			expr::variable_node_ptr varp{ var };
+			left = std::make_unique<expr::nameof_expr>(std::move(varp));
+		}
+		else
+			OUT_PARSER_EXCEPTION("Expected variable after keyword \"nameof\"");
+		break;
+	}
 	case TID::KEYWORD_BREAK:
 		if (pctx_->loop_depth == 0)
 			OUT_PARSER_EXCEPTION("Keyword \"break\" only avaliable in loop statement");
@@ -534,6 +563,38 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 	case TID::FALSE:
 		left = std::make_unique<expr::number_literal_node>("0", 1);
 		break;
+	case TID::KEYWORD_NEW:
+	{
+		bool is_single = false;
+		expr::expr_node_ptr rhs_value{};
+		if (lexer_.expect(TID::LBRACKET))
+		{
+			is_single = true;
+			lexer_.next();
+			rhs_value = expression(0);
+			if (lexer_.not_expect(TID::RBRACKET))
+				OUT_PARSER_EXCEPTION("Expected \")\" after \"(\" in keyword \"new\"");
+			lexer_.next();
+		}
+		else if (lexer_.expect(TID::SLBRACKET))
+		{
+			is_single = false;
+			lexer_.next();
+			rhs_value = expression(0);
+			if (lexer_.not_expect(TID::SRBRACKET))
+				OUT_PARSER_EXCEPTION("Expected \"[\" after \"]\" in keyword \"new\"");
+			lexer_.next();
+
+			if (auto* n = ul::dyn_cast<expr::number_literal_node>(rhs_value.get()))
+				n->bit_count = 64;
+			else
+				OUT_PARSER_EXCEPTION("Expected number to get size");
+		}
+		else
+			OUT_PARSER_EXCEPTION("Expected \"[\" or \"(\" to start expression for \"new\"");
+		left = std::make_unique<expr::dynamic_malloc_expr>(std::move(rhs_value), is_single);
+		break;
+	}
 	case TID::NUMBER_LITERAL:
 	{
 		int64_t integer = std::stoll(ti.lexeme);
@@ -620,8 +681,7 @@ EXPR expr_node_ptr PARSER language_parser::led(token::token_info& ti, expr::expr
 		if (auto* lhsp = ul::dyn_cast<expr::variable_node>(left.release()))
 		{
 			auto&& lhs = expr::variable_node_ptr{ lhsp };
-			if (!pctx_->current_names.contains(lhs->name))
-				pctx_->current_names.insert(lhs->name);
+			pctx_->current_names.insert({ lhs->name, pctx_->block_depth });
 			return std::make_unique<expr::variable_assignment_expr>(std::move(lhs), std::move(right));
 		}
 		else

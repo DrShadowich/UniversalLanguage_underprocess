@@ -10,6 +10,7 @@ set(SRC_ADDS "${SRC_DIR}/core_exceptions.cpp"
 "${SRC_DIR}/source_manager.cpp"
 "${SRC_DIR}/source_location_ul.cpp"
 "${SRC_DIR}/policy.cpp"
+"${SRC_DIR}/file_module.cpp"
 )
 
 add_library (CoreStaticLib "${SRC_ADDS}" )

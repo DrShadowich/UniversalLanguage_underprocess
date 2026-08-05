@@ -39,6 +39,8 @@ namespace ul::utils
 		bool contains_type(const std::string& name);
 		bool contains_function(const std::string& name);
 		
+		std::vector<llvm::Value*> get_all_variables();
+
 		llvm::Value* get_variable(const std::string& name);
 		llvm::Type* get_type(const std::string& name);
 		llvm::Function* get_function(const std::string& name);

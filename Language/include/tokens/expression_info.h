@@ -112,6 +112,8 @@ namespace ul::expr
 	};
 	using function_node_ptr = std::unique_ptr<function_node>;
 
+	struct end_of_block : public expr_node{};
+
 	struct function_parameters_node : public expr_node
 	{
 		std::vector<std::string> names;
@@ -205,6 +207,21 @@ namespace ul::expr
 		using binary_operator_node::binary_operator_node;
 	};
 	using variable_assignment_expr_ptr = std::unique_ptr<variable_assignment_expr>;
+	
+	struct dynamic_malloc_expr : public expr_node
+	{
+		expr::expr_node_ptr rhs;
+		bool is_single = true;
+		explicit dynamic_malloc_expr(expr::expr_node_ptr rhs, bool is_single);
+		explicit dynamic_malloc_expr(expr::expr_node_ptr rhs);
+	};
+
+	struct nameof_expr : public expr_node
+	{
+		variable_node_ptr variable;
+		explicit nameof_expr(variable_node_ptr var);
+	};
+
 	// Get type if expression is var, string lexeme, number lexeme.
 	std::string get_type_of_expression(expr_node& expression);
 	expr::argument_node_ptr make_argument(expr_node_ptr expression);

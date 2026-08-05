@@ -3,6 +3,9 @@
 #include <function_name_info.h>
 #include <stmt_expr_cast.h>
 #include <llvm+.h>
+#include <sstream>
+#include <fstream>
+#include <filesystem>
 
 #define get_function_name(fn_str)	utils::get_name_without_type(parser::function_name_info::get_name(fn_str))
 
@@ -10,7 +13,8 @@
 
 
 CODEGEN	code_generator::code_generator(llvm::LLVMContext& ctx, llvm::Module& module, std::vector<std::unique_ptr<stmt::statement>> AST) :
-	ctx_{ ctx }, module_{ module }, builder_{ ctx }, AST_{ std::move(AST) }, gctx_{ std::make_unique<generator_context>() }
+	ctx_{ ctx }, module_{ module }, builder_{ ctx }, AST_{ std::move(AST) }, gctx_{ std::make_unique<generator_context>() },
+	file_module_{}, marker_generator_{ ctx, builder_, module, names_table_, file_module_ }
 {
 	names_table_.insert("int16", dictionaries::ul_llvm_type_table.at("int16")(ctx_));
 	names_table_.insert("int32", dictionaries::ul_llvm_type_table.at("int32")(ctx_));
@@ -22,7 +26,14 @@ CODEGEN	code_generator::code_generator(llvm::LLVMContext& ctx, llvm::Module& mod
 	names_table_.insert("bool", dictionaries::ul_llvm_type_table.at("bool")(ctx_));
 	names_table_.insert("ptr", dictionaries::ul_llvm_type_table.at("ptr")(ctx_));
 	names_table_.insert("", dictionaries::ul_llvm_type_table.at("")(ctx_));
+	file_module_.set_llvm_file(std::format("{}.ll", module_.getName().str()));
 }
+
+ul::utils::file_module CODEGEN code_generator::get_file_module()
+{
+	return std::move(file_module_);
+}
+
 void CODEGEN code_generator::add_depth()
 {
 	++names_table_;
@@ -62,6 +73,8 @@ void CODEGEN code_generator::generate_statements()
 		generate_statement(std::move(stmt));
 	}
 }
+
+
 CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_ptr stmt)
 {
 	if (stmt == nullptr)
@@ -71,7 +84,9 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 
 	if(auto* n = ul::dyn_cast<stmt::elif_statement>(stmtp))
 	{
-		auto [then_bb, else_bb, _] = make_then_blocks(ctx_, gctx_->if_statement_space->getParent(), "elif");
+		auto* parent = gctx_->if_statement_space->getParent();
+		auto* then_bb = llvm::BasicBlock::Create(ctx_, "elif_then", parent);
+		auto* else_bb = llvm::BasicBlock::Create(ctx_, "elif_else", parent);
 		auto* boolean_condition = generate_expression(std::move(n->condition)).value;
 		builder_.CreateCondBr(boolean_condition, then_bb, else_bb);
 
@@ -88,8 +103,32 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 	}
 	else if(auto* n = ul::dyn_cast<stmt::marker_statement>(stmtp))
 	{
-		stmt::marker_statement_ptr st{ ul::dyn_cast<stmt::marker_statement>(stmt.release()) };
-
+		namespace fs = std::filesystem;
+		switch(n->marker_type)
+		{
+		case token::TID::CONFIG_MARKER:
+		{
+			marker_generator_.generate_config(std::move(n->body));
+			return universal_answer;;
+		}
+		case token::TID::PYTHON_MARKER:
+		{
+			marker_generator_.generate_python_code(std::move(n->body));
+			return universal_answer;
+		}
+		case token::TID::CPP_MARKER:
+		{
+			marker_generator_.generate_cpp_code(std::move(n->body));
+			return universal_answer;
+		}
+		case token::TID::C_MARKER:
+		{
+			marker_generator_.generate_c_code(std::move(n->body));
+			return universal_answer;
+		}
+		default:
+			CODE_GENERATOR_EXCEPTION(std::format("Unhandled marker type: {}", n->header));
+		}
 	}
 	else if(auto* n = ul::dyn_cast<stmt::for_loop_statement>(stmtp))
 	{
@@ -165,6 +204,10 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 		gctx_->is_named_statement = false;
 		builder_.CreateBr(loop_body);
 		builder_.SetInsertPoint(loop_exit);
+	}
+	else if(auto* n = ul::dyn_cast<stmt::end_of_block_statement>(stmtp))
+	{
+
 	}
 	else if(auto* n = ul::dyn_cast<stmt::else_statement>(stmtp))
 	{
@@ -278,6 +321,7 @@ std::pair<llvm::Value*, llvm::Value*> CODEGEN code_generator::get_binary_ops_ope
 	llvm::Value* left = generate_expression(std::move(first)).value;
 	gctx_->left_buffer = left;
 	llvm::Value* right = generate_expression(std::move(second)).value;
+	gctx_->left_buffer = nullptr;
 	llvm::Value* left_operand{ nullptr };
 	llvm::Value* right_operand{ nullptr };
 	if (any_is_pointer(left, right) == left)
@@ -295,7 +339,6 @@ std::pair<llvm::Value*, llvm::Value*> CODEGEN code_generator::get_binary_ops_ope
 		left_operand = left;
 		right_operand = right;
 	}
-	gctx_->left_buffer = nullptr;
 	return { left_operand, right_operand };
 }
 
@@ -420,6 +463,50 @@ if (typeof(left_operand) != typeof(right_operand))\
 	{
 		builder_.CreateBr(builder_.GetInsertBlock());
 	}
+	else if(auto* n = ul::dyn_cast<expr::dynamic_malloc_expr>(exprp))
+	{
+		//								 count						   size
+		std::vector<llvm::Type*> params{ llvm::Type::getInt64Ty(ctx_), llvm::Type::getInt64Ty(ctx_) };
+		auto* alloc_func_type = llvm::FunctionType::get(llvm::Type::getInt8Ty(ctx_)->getPointerTo(), params, false);
+		auto alloc_func = module_.getOrInsertFunction("__ul_allocate", alloc_func_type);
+		auto* rhs = generate_expression(std::move(n->rhs)).value;
+		std::vector<llvm::Value*> args{};
+		
+		if (gctx_->left_buffer_string.empty())
+			CODE_GENERATOR_EXCEPTION("Expected variable");
+
+		if (!n->is_single)
+		{
+			if (!typeof(rhs)->isIntegerTy())
+				CODE_GENERATOR_EXCEPTION("Expected number or integer in new");
+			
+			if(auto* constant = llvm::dyn_cast<llvm::ConstantInt>(rhs))
+			{
+				int64_t value = constant->getSExtValue();
+				args.emplace_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx_), value));
+			}
+			else
+				args.push_back(rhs);
+			auto size_of = module_.getDataLayout().getTypeAllocSize(names_table_.get_type(utils::get_type_from_name(gctx_->left_buffer_string)));
+			args.emplace_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx_), size_of));
+		}
+		else
+		{
+			args.emplace_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx_), 1));
+			args.emplace_back(rhs);
+		}
+		
+		llvm::Value* call_inst = builder_.CreateCall(alloc_func, args, "new");
+		universal_answer.value = std::move(call_inst);
+		return universal_answer;
+	}
+	else if (auto* n = ul::dyn_cast<expr::nameof_expr>(exprp))
+	{
+		if (!names_table_.contains_variable(n->variable->name))
+			CODE_GENERATOR_EXCEPTION(std::format("Variable {} is not defined", n->variable->name));
+		universal_answer.value = create_string(module_, builder_, ctx_, std::move(n->variable->name));
+		return universal_answer;
+	}
 	else if(auto* n = ul::dyn_cast<expr::variable_additional_assignment_expr>(exprp))
 	{
 
@@ -459,20 +546,23 @@ if (typeof(left_operand) != typeof(right_operand))\
 	}
 	else if (auto* n = ul::dyn_cast<expr::variable_assignment_expr>(exprp))
 	{
-		auto* lhs = ul::dyn_cast<expr::variable_node>(n->left.get());
+		auto* lhsp = ul::dyn_cast<expr::variable_node>(n->left.get());
+		std::string var_name = lhsp->name;
+		gctx_->left_buffer_string = var_name;
 		llvm::Value* rhs = generate_expression(std::move(n->right)).value;
-		auto&& llvm_type = get_aligned_type(lhs->name);
-		if (!names_table_.contains_variable(lhs->name))
+		gctx_->left_buffer_string = "";
+		auto&& llvm_type = get_aligned_type(var_name);
+		if (!names_table_.contains_variable(var_name))
 		{
-			llvm::AllocaInst* variable = builder_.CreateAlloca(llvm_type.type, nullptr, lhs->name);
+			llvm::AllocaInst* variable = builder_.CreateAlloca(llvm_type.type, nullptr, var_name);
 			builder_.CreateAlignedStore(rhs, variable, llvm_type.align);
-			names_table_.insert(lhs->name, variable);
+			names_table_.insert(var_name, variable);
 			universal_answer.value = llvm::cast<llvm::Value>(variable);
 		}
 		else
 		{
-			builder_.CreateAlignedStore(rhs, names_table_.get_variable(lhs->name), llvm_type.align);
-			universal_answer.value = names_table_.get_variable(lhs->name);
+			builder_.CreateAlignedStore(rhs, names_table_.get_variable(var_name), llvm_type.align);
+			universal_answer.value = names_table_.get_variable(var_name);
 		}
 		return universal_answer;
 	}
@@ -577,12 +667,14 @@ if (typeof(left_operand) != typeof(right_operand))\
 	else if (auto* n = ul::dyn_cast<expr::number_literal_node>(exprp))
 	{
 		int64_t literal = std::stoll(n->lexeme);
-		if (gctx_->if_statement_space)
+		if (gctx_->if_statement_space && not gctx_->left_buffer)
 			universal_answer.value = literal ? llvm::ConstantInt::getTrue(ctx_) : llvm::ConstantInt::getFalse(ctx_);
 		else
 		{
 			llvm::Type* type = gctx_->left_buffer ? 
-				typeof(gctx_->left_buffer) :
+				typeof(gctx_->left_buffer) : 
+				not gctx_->left_buffer_string.empty() ?
+				names_table_.get_type(utils::get_type_from_name(gctx_->left_buffer_string)) :
 				llvm::Type::getIntNTy(ctx_, n->bit_count);
 			universal_answer.value = llvm::ConstantInt::get(type, literal);
 		}

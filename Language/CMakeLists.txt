@@ -23,6 +23,8 @@ set(SRC_FILES
 "${SRC_DIR}/llvm+.cpp"
 "${SRC_DIR}/marker_generator.cpp"
 "${SRC_DIR}/marker_parser.cpp"
+"${SRC_DIR}/commander.cpp"
+"${SRC_DIR}/msvc_details.cpp"
 
 )
 

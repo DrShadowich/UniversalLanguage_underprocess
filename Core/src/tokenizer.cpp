@@ -30,17 +30,17 @@ namespace ul::utils::classes
 		char kept_symbol{};
 		for(char symbol : data)
 		{
-			if(symbol == '#')
+			if(symbol == '%' && !commentaries && !string_literal)
+			{
+				remains = !remains;
+			}
+			else if(symbol == '#' && !remains)
 			{
 				commentaries = !commentaries;
 			}
 			else if(symbol == '\"' && !commentaries)
 			{
 				string_literal = !string_literal;
-			}
-			else if(symbol == '%' && !commentaries && !string_literal)
-			{
-				remains = !remains;
 			}
 			if(commentaries || string_literal || remains)
 			{

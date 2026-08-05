@@ -178,12 +178,14 @@ namespace ul::stmt
 		std::string header;
 		std::string body;
 		std::string footer;
-		ul::token::MID marker_type;
-		explicit marker_statement(std::string head, std::string bod, std::string foot, ul::token::MID mid) :
+		ul::token::TID marker_type;
+		explicit marker_statement(std::string head, std::string bod, std::string foot, ul::token::TID mid) :
 			header{ std::move(head) }, body{ std::move(bod) }, footer{ std::move(foot) }, marker_type{ mid }
 		{}
 	};
 	using marker_statement_ptr = std::unique_ptr<marker_statement>;
+
+	struct end_of_block_statement : public statement{};
 
 	else_statement_ptr reverse_if_statements_list(else_statement_ptr root);
 }

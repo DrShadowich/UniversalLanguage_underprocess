@@ -5,6 +5,21 @@
 #include "token_info.h"
 namespace ul::dictionaries
 {
+	enum native_type
+	{
+		ULSTRING,
+		ULPTR,
+		ULINT32,
+		ULINT64,
+		ULINT16,
+		ULINT8,
+		ULBOOL,
+		ULCHAR,
+		ULFLOAT,
+		ULDOUBLE,
+	};
+
+
 	struct language_dictionary
 	{
 		static inline const std::vector<token::token_type> raw =
@@ -37,6 +52,8 @@ namespace ul::dictionaries
 			token::token_type{ token::TID::TRIPLE_POINT, "TRIPLE_POINT", "..." },
 			token::token_type{ token::TID::LBRACKET, "LBRACKET", "(" },
 			token::token_type{ token::TID::RBRACKET, "RBRACKET", ")" },
+			token::token_type{ token::TID::SLBRACKET, "SLBRACKET", "[" },
+			token::token_type{ token::TID::SRBRACKET, "SRBRACKET", "]" },
 			token::token_type{ token::TID::PLUS_OPERATOR, "PLUS_OPERATOR", "+" },
 			token::token_type{ token::TID::MINUS_OPERATOR, "MINUS_OPERATOR", "-" },
 			token::token_type{ token::TID::STAR_OPERATOR, "STAR_OPERATOR", "*" },
@@ -61,6 +78,7 @@ namespace ul::dictionaries
 
 
 			// --- Keywords ---
+			token::token_type{ token::TID::KEYWORD_NAMEOF, "KEYWORD_NAMEOF", std::regex("\\bnameof\\b") },
 			token::token_type{ token::TID::KEYWORD_INSERT, "KEYWORD_INSERT", std::regex("\\binsert\\b") },
 			token::token_type{ token::TID::KEYWORD_EXTERN, "KEYWORD_EXTERN", std::regex("\\bextern\\b") },
 			token::token_type{ token::TID::KEYWORD_IF, "KEYWORD_IF", std::regex("\\bif\\b") },
@@ -83,6 +101,7 @@ namespace ul::dictionaries
 			token::token_type{ token::TID::KEYWORD_GLOBAL, "KEYWORD_GLOBAL", std::regex("\\bglobal\\b") },
 			token::token_type{ token::TID::KEYWORD_CONSTEXPR, "KEYWORD_CONSTEXPR", std::regex("\\bconstexpr\\b") },
 			token::token_type{ token::TID::KEYWORD_REF, "KEYWORD_REF", std::regex("\\bref\\b") },
+			token::token_type{ token::TID::KEYWORD_NEW, "KEYWORD_NEW", std::regex("\\bnew\\b")},
 
 			// --- booleans ---
 			token::token_type{ token::TID::TRUE, "TRUE", std::regex("\\btrue\\b") },
@@ -166,12 +185,26 @@ namespace ul::dictionaries
 		{ "ptr", 8 },
 	};
 
-	static inline const std::unordered_map<std::string, token::MID> ul_marker_types =
+	static inline const std::unordered_map<std::string, native_type> ul_native_type_number =
 	{
-		{ "py", token::MID::PYTHON },
-		{ "lua", token::MID::LUA },
-		{ "c", token::MID::C },
-		{ "cpp", token::MID::CPP },
-		{ "config", token::MID::CONFIG },
+		{ "int8", ULINT8 },
+		{ "int16", ULINT16 },
+		{ "int32", ULINT32 },
+		{ "int64", ULINT64 },
+		{ "char", ULCHAR },
+		{ "bool", ULBOOL },
+		{ "str", ULSTRING },
+		{ "float", ULFLOAT },
+		{ "double", ULDOUBLE },
+		{ "ptr", ULPTR},
+	};
+
+	static inline const std::unordered_map<std::string, token::TID> ul_marker_types =
+	{
+		{ "py", token::TID::PYTHON_MARKER },
+		{ "lua", token::TID::LUA_MARKER },
+		{ "c", token::TID::C_MARKER },
+		{ "cpp", token::TID::CPP_MARKER },
+		{ "config", token::TID::CONFIG_MARKER },
 	};
 }

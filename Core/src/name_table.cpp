@@ -79,6 +79,16 @@ namespace ul::utils
 		return map_function_[name].first;
 	}
 
+	std::vector<llvm::Value*> name_table::get_all_variables()
+	{
+		std::vector<llvm::Value*> variables;
+		for (const auto& pair : map_value_)
+		{
+			variables.push_back(pair.second.first);
+		}
+		return variables;
+	}
+
 	void name_table::operator++()
 	{
 		update_namespace(cur_depth_ + 1);
