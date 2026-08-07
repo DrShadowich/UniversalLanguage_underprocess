@@ -10,7 +10,7 @@ namespace ul::token
 		if (is_pattern_regex)
 			this->regex_token_pattern = std::make_unique<std::regex>(*rhs.regex_token_pattern);
 		else
-			this->token_pattern = std::make_unique<std::string>(*rhs.token_pattern);
+			this->token_pattern = std::make_unique<utils::classes::stringi8>(*rhs.token_pattern);
 	}
 	token_type::token_type(token_type&& rhs) noexcept :
 		token_pattern{ std::move(rhs.token_pattern) },
@@ -35,11 +35,11 @@ namespace ul::token
 		if (this->is_pattern_regex)
 			this->regex_token_pattern = std::make_unique<std::regex>(*rhs.regex_token_pattern);
 		else
-			this->token_pattern = std::make_unique<std::string>(*rhs.token_pattern);
+			this->token_pattern = std::make_unique<utils::classes::stringi8>(*rhs.token_pattern);
 		return *this;
 	}
-	token_type::token_type(ul::token::TID token_type_, const char* type_str, std::string pattern) :
-		token_pattern{ std::make_unique<std::string>(std::move(pattern)) },
+	token_type::token_type(ul::token::TID token_type_, const char* type_str, utils::classes::stringi8 pattern) :
+		token_pattern{ std::make_unique<utils::classes::stringi8>(std::move(pattern)) },
 		regex_token_pattern{ nullptr },
 		is_pattern_regex{ false },
 		enum_type{ token_type_ },

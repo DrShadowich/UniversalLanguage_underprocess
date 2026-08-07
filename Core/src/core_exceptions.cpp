@@ -3,7 +3,7 @@
 namespace ul::ex
 {
 
-	parser_exception::parser_exception(std::string msg, std::string file_name, std::pair<uint64_t, uint64_t> col_and_row) :
+	parser_exception::parser_exception(utils::classes::stringi8 msg, utils::classes::stringi8 file_name, std::pair<uint64_t, uint64_t> col_and_row) :
 		file_code_col_{ col_and_row.first }, file_code_line_{ col_and_row.second }
 	{
 		file_name_ = file_name.c_str();

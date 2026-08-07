@@ -1,7 +1,7 @@
 #include <msvc_details.h>
 #ifdef _MSVC_LANG
 
-std::wstring cmd::string_to_wstring(const std::string& str)
+std::wstring cmd::string_to_wstring(const ul::utils::classes::stringi8& str)
 {
 	if (str.empty()) return {};
 
@@ -11,7 +11,7 @@ std::wstring cmd::string_to_wstring(const std::string& str)
 	return wstr;
 }
 
-void cmd::start_clangpp(std::string command)
+void cmd::start_clangpp(ul::utils::classes::stringi8 command)
 {
 	std::wstring cm = string_to_wstring(command);
 #ifdef DEBUG
@@ -43,7 +43,7 @@ void cmd::start_clangpp(std::string command)
 }
 #endif
 
-void cmd::start_clang(std::string command)
+void cmd::start_clang(ul::utils::classes::stringi8 command)
 {
 	std::wstring cm = string_to_wstring(command);
 #ifdef DEBUG

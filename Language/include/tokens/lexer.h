@@ -13,18 +13,18 @@ namespace ul::lexer
 		using tok_info_vector_rit = tok_info_vector::reverse_iterator;
 		using tok_info_vector_crit = tok_info_vector::const_reverse_iterator;
 		using tok_info_vector_cit = tok_info_vector::const_iterator;
-		ul::utils::classes::tokenizer tokenizer_;
-		std::string input_information_;
+		utils::classes::tokenizer tokenizer_;
+		utils::classes::stringi8 input_information_;
 		tok_info_vector ready_tokens_;
 		uint64_t cursor_{ 0 };
 	public:
 		language_lexer();
-		language_lexer(std::string input);
+		language_lexer(utils::classes::stringi8 input);
 		tok_info_vector_it front();
 		void next();
 		void flush_cursor();
 		uint64_t get_current_offset();
-		std::string get_input_information();
+		utils::classes::stringi8 get_input_information();
 		tok_info_vector_it begin();
 		tok_info_vector_it end();
 		tok_info_vector_cit begin() const;
@@ -47,5 +47,6 @@ namespace ul::lexer
 		}
 		void determine_va_arg();
 		void determine_not_equal();
+		void determine_pointer();
 	};
 }

@@ -1,16 +1,15 @@
 ﻿set(SRC_DIR "${CMAKE_SOURCE_DIR}/Core/src")
 
 set(SRC_ADDS "${SRC_DIR}/core_exceptions.cpp"
-"${SRC_DIR}/commentaries.cpp"
 "${SRC_DIR}/separator.cpp"
 "${SRC_DIR}/tokenizer.cpp"
-"${SRC_DIR}/simple_variable.cpp"
 "${SRC_DIR}/name_table.cpp"
 "${SRC_DIR}/llvm_value.cpp"
 "${SRC_DIR}/source_manager.cpp"
 "${SRC_DIR}/source_location_ul.cpp"
 "${SRC_DIR}/policy.cpp"
 "${SRC_DIR}/file_module.cpp"
+"${SRC_DIR}/ulstring.cpp"
 )
 
 add_library (CoreStaticLib "${SRC_ADDS}" )

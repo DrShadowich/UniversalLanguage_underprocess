@@ -1,5 +1,6 @@
 #pragma once
 #include <llvm_libs.h>
+#include <ulstring.h>
 namespace ul::codegen
 {
 	namespace detail
@@ -24,7 +25,7 @@ namespace ul::codegen
 	// 1. then
 	// 2. else
 	// 3. merge
-	detail::trio_blocks make_then_blocks(llvm::LLVMContext& ctx, llvm::Function* parent, std::string name = "");
+	detail::trio_blocks make_then_blocks(llvm::LLVMContext& ctx, llvm::Function* parent, utils::classes::stringi8 name = "");
 
-	llvm::Value* create_string(llvm::Module& mod_, llvm::IRBuilder<>& builder, llvm::LLVMContext& ctx, std::string cpp_string);
+	llvm::Value* create_string(llvm::Module& mod_, llvm::IRBuilder<>& builder, llvm::LLVMContext& ctx, utils::classes::stringi8 cpp_string);
 }

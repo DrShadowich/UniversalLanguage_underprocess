@@ -1,6 +1,7 @@
 #include <parser.h>
 #include <expression_info.h>
 #include <stmt_expr_cast.h>
+#include <iostream>
 
 #define PARSER	ul::parser::
 #define EXPR	ul::expr::
@@ -59,6 +60,7 @@ bool PARSER	language_parser::is_expression_start(const token::token_type& tt)
 	case TID::KEYWORD_BREAK:
 	case TID::KEYWORD_CONTINUE:
 	case TID::KEYWORD_NEW:
+	case TID::KEYWORD_NULL:
 		return true;
 	default:
 		return false;
@@ -102,14 +104,16 @@ EXPR function_parameters_node_ptr PARSER language_parser::parse_parameters()
 		{
 			expr::type_variable_node_ptr type =
 				std::make_unique<expr::type_variable_node>(ul::dyn_cast<expr::variable_node>(future_param.release()));
-			std::string type_name = type->name;
+			utils::classes::stringi8 type_name = type->name;
 			params->types.emplace_back(std::move(type));
 			params->names.emplace_back(std::move(type_name));
 		}
 		if (auto* b = ul::dyn_cast<expr::function_with_va_args_node>(future_param.get()))
 		{
-			if (params->va_args)
+			if (params->va_args == true)
+			{
 				OUT_PARSER_EXCEPTION("Va args already defined");
+			}
 			else params->va_args = true;
 		}
 		if (lexer_.expect(token::TID::COMMA))
@@ -126,7 +130,7 @@ EXPR function_parameters_node_ptr PARSER language_parser::parse_parameters()
 
 EXPR function_definition_node_ptr PARSER language_parser::parse_function_definition_node()
 {
-	std::string function_name = lexer_.front()->lexeme;
+	utils::classes::stringi8 function_name = lexer_.front()->lexeme;
 	auto&& fn = std::make_unique<expr::function_node>(std::move(function_name));
 	lexer_.next();
 	auto&& params = parse_parameters();
@@ -219,7 +223,7 @@ STMT extern_function_declaration_ptr PARSER language_parser::parse_extern_functi
 		lexer_.next();
 		if (lexer_.not_expect(token::TID::UNNAMED_CLASS_TYPE))
 			OUT_PARSER_EXCEPTION("Expected unnamed class type. Samples: _int64, _str, _bool");
-		std::string type = std::move(utils::get_type_from_name(lexer_.front()->lexeme));
+		utils::classes::stringi8 type = std::move(lexer_.front()->lexeme.get_type_from_name());
 		function_definition->function_type = std::make_unique<expr::type_node>(std::move(type));
 		lexer_.next();
 		// inserting function
@@ -257,7 +261,7 @@ STMT block_statement_ptr PARSER language_parser::parse_block_statement()
 				std::make_unique<expr::type_node>(std::move(b->type_str));
 		}
 		block->statements.emplace_back(std::move(stmt));
-		block->statements.emplace_back(std::make_unique<stmt::end_of_block_statement>());
+		block->statements.emplace_back(std::make_unique<stmt::end_of_block_statement>(std::move(pctx_->end_expressions)));
 		if (lexer_.expect(token::TID::SEMICOLON)) { lexer_.next(); }
 	}
 	if (lexer_.not_expect(token::TID::FRBRACKET))
@@ -319,7 +323,7 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 
 	else if(lexer_.expect(token::TID::MARKER_EXPRESSION))
 	{
-		std::string lexeme = std::move(lexer_.front()->lexeme);
+		utils::classes::stringi8 lexeme = std::move(lexer_.front()->lexeme);
 		lexer_.next();
 		return marker_parser_->parse_marker(std::move(lexeme));
 	}
@@ -329,7 +333,7 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 		lexer_.next();
 		auto&& file_name = expression(0);
 		if (auto* fn = ul::dyn_cast<expr::string_literal_node>(file_name.get()))
-			return std::make_unique<stmt::insert_statement>(std::move(utils::get_string_literal(fn->literal)));
+			return std::make_unique<stmt::insert_statement>(fn->literal.get_string_literal());
 		else
 			OUT_PARSER_EXCEPTION("Inserting file requires file name");
 	}
@@ -399,7 +403,7 @@ STMT statement_ptr PARSER language_parser::parse_statement()
 	{
 		lexer_.next();
 		auto return_block = expression(0);
-		std::string return_type = expr::get_type_of_expression(*return_block);
+		utils::classes::stringi8 return_type = expr::get_type_of_expression(*return_block);
 		if (lexer_.not_expect(token::TID::SEMICOLON))
 			OUT_PARSER_EXCEPTION("Expected \';\' after return");
 		lexer_.next();
@@ -563,38 +567,6 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 	case TID::FALSE:
 		left = std::make_unique<expr::number_literal_node>("0", 1);
 		break;
-	case TID::KEYWORD_NEW:
-	{
-		bool is_single = false;
-		expr::expr_node_ptr rhs_value{};
-		if (lexer_.expect(TID::LBRACKET))
-		{
-			is_single = true;
-			lexer_.next();
-			rhs_value = expression(0);
-			if (lexer_.not_expect(TID::RBRACKET))
-				OUT_PARSER_EXCEPTION("Expected \")\" after \"(\" in keyword \"new\"");
-			lexer_.next();
-		}
-		else if (lexer_.expect(TID::SLBRACKET))
-		{
-			is_single = false;
-			lexer_.next();
-			rhs_value = expression(0);
-			if (lexer_.not_expect(TID::SRBRACKET))
-				OUT_PARSER_EXCEPTION("Expected \"[\" after \"]\" in keyword \"new\"");
-			lexer_.next();
-
-			if (auto* n = ul::dyn_cast<expr::number_literal_node>(rhs_value.get()))
-				n->bit_count = 64;
-			else
-				OUT_PARSER_EXCEPTION("Expected number to get size");
-		}
-		else
-			OUT_PARSER_EXCEPTION("Expected \"[\" or \"(\" to start expression for \"new\"");
-		left = std::make_unique<expr::dynamic_malloc_expr>(std::move(rhs_value), is_single);
-		break;
-	}
 	case TID::NUMBER_LITERAL:
 	{
 		int64_t integer = std::stoll(ti.lexeme);
@@ -606,10 +578,10 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 	}
 	case TID::STRING_LITERAL:
 	{
-		std::string string_literal;
+		utils::classes::stringi8 string_literal;
 		try
 		{
-			string_literal = utils::get_string_literal(std::move(ti.lexeme));
+			string_literal = ti.lexeme.get_string_literal();
 		}
 		catch(ul::ex::parser_exception& pex)
 		{
@@ -652,6 +624,9 @@ EXPR expr_node_ptr PARSER language_parser::nud(token::token_info& ti)
 		lexer_.next();
 		break;
 	}
+	case TID::KEYWORD_NULL:
+		left = std::make_unique<expr::null_expr>();
+		break;
 	case TID::VARIABLE_IDENTIFIER:
 		left = std::make_unique<expr::variable_node>(std::move(ti.lexeme));
 		break;
@@ -674,6 +649,7 @@ EXPR expr_node_ptr PARSER language_parser::led(token::token_info& ti, expr::expr
 	using namespace token;
 	uint32_t right_binding_priority = lbp(ti.type);
 	auto&& right = expression(right_binding_priority);
+
 	switch (ti.type)
 	{
 	case TID::ASSIGNMENT_OPERATOR:

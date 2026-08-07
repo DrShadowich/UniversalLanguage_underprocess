@@ -5,7 +5,7 @@ namespace ul::token
 {
 	struct token_info
 	{
-		std::string lexeme{};
+		utils::classes::stringi8 lexeme{};
 		ul::token::token_type type{};
 		int64_t additional_value{};
 		token_info(){}
@@ -24,8 +24,8 @@ namespace ul::token
 		bool operator!=(const token_info& rhs) const { return !(*this == rhs); }
 		bool operator==(const token::TID& rhs) const { return type.enum_type == rhs; }
 		bool operator!=(const token::TID& rhs) const { return type.enum_type != rhs; }
-		bool operator==(const std::string& rhs) const { return lexeme == rhs; }
-		bool operator!=(const std::string& rhs) const { return !(*this == rhs); }
+		bool operator==(const utils::classes::stringi8& rhs) const { return lexeme == rhs; }
+		bool operator!=(const utils::classes::stringi8& rhs) const { return !(*this == rhs); }
 		
 	};
 }

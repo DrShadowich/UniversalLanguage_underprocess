@@ -15,28 +15,28 @@ namespace ul::utils
 		map_value_.clear();
 	}
 
-	void name_table::insert(const std::string& var_name, llvm::Value* value)
+	void name_table::insert(const classes::stringi8& var_name, llvm::Value* value)
 	{
 		map_value_[var_name] = map_value{ value, cur_depth_ };
 	}
-	void name_table::insert(const std::string& type_name, llvm::Type* type)
+	void name_table::insert(const classes::stringi8& type_name, llvm::Type* type)
 	{
 		map_type_[type_name] = map_type{ type, cur_depth_ };
 	}
-	void name_table::insert(const std::string& func_name, llvm::Function* function)
+	void name_table::insert(const classes::stringi8& func_name, llvm::Function* function)
 	{
 		map_function_[func_name] = map_function{ function, cur_depth_ };
 	}
 
-	bool name_table::contains_variable(const std::string& name)
+	bool name_table::contains_variable(const classes::stringi8& name)
 	{
 		return map_value_.contains(name);
 	}
-	bool name_table::contains_type(const std::string& name)
+	bool name_table::contains_type(const classes::stringi8& name)
 	{
 		return map_type_.contains(name);
 	}
-	bool name_table::contains_function(const std::string& name)
+	bool name_table::contains_function(const classes::stringi8& name)
 	{
 		return map_function_.contains(name);
 	}
@@ -66,15 +66,15 @@ namespace ul::utils
 		cur_depth_ = new_depth;
 	}
 
-	llvm::Value* name_table::get_variable(const std::string& name)
+	llvm::Value* name_table::get_variable(const classes::stringi8& name)
 	{
 		return map_value_[name].first;
 	}
-	llvm::Type* name_table::get_type(const std::string& name)
+	llvm::Type* name_table::get_type(const classes::stringi8& name)
 	{
 		return map_type_[name].first;
 	}
-	llvm::Function* name_table::get_function(const std::string& name)
+	llvm::Function* name_table::get_function(const classes::stringi8& name)
 	{
 		return map_function_[name].first;
 	}

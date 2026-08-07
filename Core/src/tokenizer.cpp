@@ -23,7 +23,7 @@ namespace ul::utils::classes
 	}
 	void tokenizer::tokenize(std::string_view data)
 	{
-		std::string line;
+		classes::stringi8 line;
 		bool string_literal = false;
 		bool commentaries = false;
 		bool remains = false;

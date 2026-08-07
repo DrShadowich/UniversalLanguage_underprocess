@@ -3,7 +3,7 @@
 
 #define LEXER	ul::lexer::
 
-LEXER language_lexer::language_lexer(std::string input) :
+LEXER language_lexer::language_lexer(utils::classes::stringi8 input) :
 	input_information_{ std::move(input) }, tokenizer_{ std::move(utils::separator{ " \t\r", "!():;{}[],.\n" }) }
 {
 	get_tokens();
@@ -14,7 +14,7 @@ LEXER language_lexer::language_lexer() :
 	input_information_{ "" }, tokenizer_{ std::move(utils::separator{ " \t\r", "!():;{}[],.\n" }) }
 {}
 
-std::string LEXER language_lexer::get_input_information()
+ul::utils::classes::stringi8 LEXER language_lexer::get_input_information()
 {
 	return input_information_;
 }
@@ -48,6 +48,15 @@ void LEXER language_lexer::determine_not_equal()
 	}
 }
 
+void LEXER language_lexer::determine_pointer()
+{
+	if (ready_tokens_[ready_tokens_.size() - 1] == token::TID::LOGICAL_GREATER_OPERATOR && ready_tokens_[ready_tokens_.size() - 2] == token::TID::MINUS_OPERATOR)
+	{
+		ready_tokens_.erase((ready_tokens_.end() - 2), ready_tokens_.end());
+		ready_tokens_.emplace_back("->", dictionaries::language_dictionary::match_pattern("->"));
+	}
+}
+
 void LEXER language_lexer::get_tokens()
 {
 	token::token_type tt{};
@@ -63,6 +72,7 @@ void LEXER language_lexer::get_tokens()
 		this->ready_tokens_.emplace_back(lexeme, tt);
 		determine_va_arg();
 		determine_not_equal();
+		determine_pointer();
 	}
 }
 

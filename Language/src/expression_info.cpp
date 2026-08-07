@@ -4,21 +4,21 @@ namespace ul::expr
 {
 	namespace detail
 	{
-		name_info::name_info() noexcept(std::is_nothrow_constructible_v<std::string>) :
+		name_info::name_info() noexcept :
 			full_name{}, short_name{}, type_str{}
 		{}
-		name_info::name_info(std::string f, std::string s, std::string t) noexcept(std::is_nothrow_constructible_v<std::string, std::string&&>) :
+		name_info::name_info(utils::classes::stringi8 f, utils::classes::stringi8 s, utils::classes::stringi8 t) noexcept :
 			full_name{ std::move(f) }, short_name{ std::move(s) }, type_str{ std::move(t) }
 		{}
 		name_info::name_info(name_info&& rhs) noexcept :
 			full_name{ std::move(rhs.full_name) }, short_name{ std::move(rhs.short_name) }, type_str{ std::move(rhs.type_str) }
 		{}
 
-		name_info::name_info(std::string s) noexcept(std::is_nothrow_constructible_v<std::string, std::string&&>) :
+		name_info::name_info(utils::classes::stringi8 s) noexcept :
 			full_name{}, short_name{ std::move(s) }, type_str{}
 		{}
 
-		void name_info::rename(const std::string& new_name)
+		void name_info::rename(const utils::classes::stringi8& new_name)
 		{
 			short_name = new_name;
 			auto prev_name = full_name.substr(0, full_name.find_first_of('$'));
@@ -29,20 +29,20 @@ namespace ul::expr
 	}
 
 
-	type_node::type_node(std::string type_string) :
+	type_node::type_node(utils::classes::stringi8 type_string) :
 		type_str{ std::move(type_string) }
 	{}
 
-	number_literal_node::number_literal_node(std::string&& lexeme_, uint32_t bit_count_) :
+	number_literal_node::number_literal_node(utils::classes::stringi8&& lexeme_, uint32_t bit_count_) :
 		lexeme{ std::move(lexeme_) }, bit_count{ bit_count_ }
 	{}
-	number_literal_node::number_literal_node(const std::string& lexeme_, uint32_t bit_count_) :
+	number_literal_node::number_literal_node(const utils::classes::stringi8& lexeme_, uint32_t bit_count_) :
 		lexeme{ lexeme_ }, bit_count{ bit_count_ }
 	{}
 
-	string_literal_node::string_literal_node(std::string&& lexeme_) : literal{ std::move(lexeme_) }
+	string_literal_node::string_literal_node(utils::classes::stringi8&& lexeme_) : literal{ std::move(lexeme_) }
 	{}
-	string_literal_node::string_literal_node(const std::string& lexeme_) : literal{ lexeme_ }
+	string_literal_node::string_literal_node(const utils::classes::stringi8& lexeme_) : literal{ lexeme_ }
 	{}
 
 	binary_operator_node::binary_operator_node(token::token_type operator_, expr_node_ptr left_, expr_node_ptr right_) :
@@ -53,11 +53,11 @@ namespace ul::expr
 		op{ std::move(operator_) }, child{ std::move(child_) }
 	{}
 
-	named_node::named_node(std::string thing_name) :
+	named_node::named_node(utils::classes::stringi8 thing_name) :
 		name{ std::move(thing_name) }
 	{}
 
-	variable_node::variable_node(std::string variable) :
+	variable_node::variable_node(utils::classes::stringi8 variable) :
 		named_node{ std::move(variable) }
 	{}
 
@@ -67,11 +67,11 @@ namespace ul::expr
 	type_variable_node::type_variable_node(variable_node_ptr var) :
 		named_node{ std::move(var->name) }
 	{}
-	type_variable_node::type_variable_node(std::string variable) :
+	type_variable_node::type_variable_node(utils::classes::stringi8 variable) :
 		named_node{ std::move(variable) }
 	{}
 
-	function_node::function_node(std::string variable) :
+	function_node::function_node(utils::classes::stringi8 variable) :
 		name{ std::make_unique<detail::name_info>(std::move(variable)) }
 	{}
 
@@ -81,7 +81,7 @@ namespace ul::expr
 	argument_node::argument_node(argument_node&& rhs) noexcept :
 		value{ std::move(rhs.value) }, type_str{ std::move(rhs.type_str) }
 	{}
-	argument_node::argument_node(expr_node_ptr value_, std::string argument_type_name) :
+	argument_node::argument_node(expr_node_ptr value_, utils::classes::stringi8 argument_type_name) :
 		value{ std::move(value_) }, type_str{ std::move(argument_type_name) }
 	{}
 
@@ -143,7 +143,11 @@ namespace ul::expr
 		variable{ std::move(var) }
 	{}
 
-	std::string get_type_of_expression(expr_node& expression)
+	dynamic_free_expr::dynamic_free_expr(utils::classes::stringi8 var_name) :
+		variable_name{ std::move(var_name) }
+	{}
+
+	utils::classes::stringi8 get_type_of_expression(expr_node& expression)
 	{
 		auto* exptr = &expression;
 		if (auto* n = dynamic_cast<string_literal_node*>(exptr))
@@ -164,7 +168,7 @@ namespace ul::expr
 		}
 		else if (auto* n = dynamic_cast<variable_node*>(exptr))
 		{
-			return utils::get_type_from_name(n->name);
+			return n->name.get_type_from_name();
 		}
 		else if(auto* n = dynamic_cast<binary_operator_node*>(exptr))
 		{

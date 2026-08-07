@@ -1,6 +1,6 @@
 #pragma once
 #include <separator.h>
-#include <commentaries.h>
+#include <ulstring.h>
 #include <core_exceptions.h>
 #include <vector>
 namespace ul::utils::classes
@@ -8,7 +8,7 @@ namespace ul::utils::classes
 	class tokenizer
 	{
 	private:
-		using tok_vector = std::vector<std::string>;
+		using tok_vector = std::vector<classes::stringi8>;
 		using tok_vector_it = tok_vector::iterator;
 		using reverse_tok_vector_it = tok_vector::reverse_iterator;
 		separator sep_;

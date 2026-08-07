@@ -48,7 +48,7 @@ namespace ul::dictionaries
 			token::token_type{ token::TID::LOGICAL_GREATER_OR_EQUAL_OPERATOR, "LOGICAL_GREATER_OR_EQUAL_OPERATOR", std::regex("\\bgteq\\b") },
 
 			// --- Operators ---
-			token::token_type{ token::TID::POINTER, "POINTER", std::regex("\\b->\\b") },
+			token::token_type{ token::TID::POINTER, "POINTER", "->" },
 			token::token_type{ token::TID::TRIPLE_POINT, "TRIPLE_POINT", "..." },
 			token::token_type{ token::TID::LBRACKET, "LBRACKET", "(" },
 			token::token_type{ token::TID::RBRACKET, "RBRACKET", ")" },
@@ -78,6 +78,7 @@ namespace ul::dictionaries
 
 
 			// --- Keywords ---
+			token::token_type{ token::TID::KEYWORD_NULL, "KEYWORD_NULL", std::regex("\\bnil\\b") },
 			token::token_type{ token::TID::KEYWORD_NAMEOF, "KEYWORD_NAMEOF", std::regex("\\bnameof\\b") },
 			token::token_type{ token::TID::KEYWORD_INSERT, "KEYWORD_INSERT", std::regex("\\binsert\\b") },
 			token::token_type{ token::TID::KEYWORD_EXTERN, "KEYWORD_EXTERN", std::regex("\\bextern\\b") },
@@ -115,20 +116,20 @@ namespace ul::dictionaries
 			token::token_type{ token::TID::MARKER_EXPRESSION_WITH_END, "MARKER_EXPRESSION_WITH_END", std::regex(R"(%(\w*)([\w\S\s]*?)%(end))") },
 			
 			// --- Identifiers ---
-			token::token_type{ token::TID::UNNAMED_CLASS_TYPE, "UNNAMED_CLASS_TYPE", std::regex("_[a-zA-Z]+") },
+			token::token_type{ token::TID::UNNAMED_CLASS_TYPE, "UNNAMED_CLASS_TYPE", std::regex("_[a-zA-Z][a-zA-Z0-9_]+") },
 			token::token_type{ token::TID::FUNCTION_IDENTIFIER, "FUNCTION_IDENTIFIER", std::regex("[a-zA-Z0-9_]+_fn") },
 			token::token_type{ token::TID::VARIABLE_IDENTIFIER, "VARIABLE_IDENTIFIER", std::regex("[a-zA-Z0-9_]+_[a-zA-Z0-9]+") },
 			token::token_type{ token::TID::CLASS_TYPE, "CLASS_TYPE", std::regex("[a-zA-Z][a-zA-Z0-9_]+") },
 		};
 		// Check any lexeme with all patterns
-		static token::token_type match_pattern(const std::string& lexeme);
+		static token::token_type match_pattern(const utils::classes::stringi8& lexeme);
 		
 		// Check marker
-		static std::smatch search_pattern(const std::string& lexeme);
+		static std::smatch search_pattern(const utils::classes::stringi8& lexeme);
 	};
 
 	using type_factory_ptr = llvm::Type* (*)(llvm::LLVMContext&);
-	static inline const std::unordered_map<std::string, type_factory_ptr> ul_llvm_type_table =
+	static inline const std::unordered_map<utils::classes::stringi8, type_factory_ptr> ul_llvm_type_table =
 	{
 		{ "int16", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::Type::getInt16Ty(ctx); } },
 		{ "int32", [](llvm::LLVMContext& ctx) -> llvm::Type* { return llvm::Type::getInt32Ty(ctx); } },
@@ -143,7 +144,7 @@ namespace ul::dictionaries
 	};
 
 	using constant_int_factory_ptr = llvm::Value* (*)(llvm::IRBuilder<>& builder, uint64_t value);
-	static inline const std::unordered_map<std::string, constant_int_factory_ptr> ul_string_llvm_constant_int_table =
+	static inline const std::unordered_map<utils::classes::stringi8, constant_int_factory_ptr> ul_string_llvm_constant_int_table =
 	{
 		{ "int16", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt16(value); } },
 		{ "int32", [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt32(value); } },
@@ -162,7 +163,22 @@ namespace ul::dictionaries
 		{ 1, [](llvm::IRBuilder<>& builder, uint64_t value) -> llvm::Value* { return builder.getInt1(value); } }
 	};
 
-	static inline const std::unordered_map<std::string, uint32_t> ul_llvm_type_to_int_table =
+	static inline const std::unordered_map<utils::classes::stringi8, uint32_t> ul_llvm_type_size_table =
+	{
+		{ "bool", 1 },
+		{ "int1", 1 },
+		{ "int8", 1 },
+		{ "int16", 2 },
+		{ "int32", 4 },
+		{ "int64", 8 },
+		{ "float", 4 },
+		{ "double", 8 },
+		{ "char", 1 },
+		{ "str", 8 },
+		{ "ptr", 8 },
+	};
+
+	static inline const std::unordered_map<utils::classes::stringi8, uint32_t> ul_llvm_type_to_int_table =
 	{
 		{ "bool", 1 },
 		{ "int1", 1 },
@@ -172,7 +188,7 @@ namespace ul::dictionaries
 		{ "int64", 64 },
 	};
 
-	static inline const std::unordered_map<std::string, uint32_t> ul_llvm_alignment_table =
+	static inline const std::unordered_map<utils::classes::stringi8, uint32_t> ul_llvm_alignment_table =
 	{
 		{ "int16", 2 },
 		{ "int32", 4 },
@@ -185,7 +201,7 @@ namespace ul::dictionaries
 		{ "ptr", 8 },
 	};
 
-	static inline const std::unordered_map<std::string, native_type> ul_native_type_number =
+	static inline const std::unordered_map<utils::classes::stringi8, native_type> ul_native_type_number =
 	{
 		{ "int8", ULINT8 },
 		{ "int16", ULINT16 },
@@ -199,7 +215,7 @@ namespace ul::dictionaries
 		{ "ptr", ULPTR},
 	};
 
-	static inline const std::unordered_map<std::string, token::TID> ul_marker_types =
+	static inline const std::unordered_map<utils::classes::stringi8, token::TID> ul_marker_types =
 	{
 		{ "py", token::TID::PYTHON_MARKER },
 		{ "lua", token::TID::LUA_MARKER },

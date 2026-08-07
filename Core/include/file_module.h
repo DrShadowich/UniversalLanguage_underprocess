@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <ulstring.h>
 #include <string_view>
 #include <memory>
 
@@ -9,31 +9,32 @@ namespace ul::utils
 	{
 		struct python_compile_strings
 		{
-			std::string python_dir;
-			std::string python_libs;
-			std::string python_lib;
-			std::string python_include;
-			std::string python_dll;
+			classes::stringi8 python_dir;
+			classes::stringi8 python_libs;
+			classes::stringi8 python_lib;
+			classes::stringi8 python_include;
+			classes::stringi8 python_dll;
+			classes::stringi8 python_dlls;
 		};
 
 		struct cpp_compile_strings
 		{
-			std::string file_dir;
+			classes::stringi8 file_dir;
 		};
 
 		struct c_compile_strings
 		{
-			std::string file_dir;
+			classes::stringi8 file_dir;
 		};
 	}
 
 	struct language_directories
 	{
-		std::string llvm_file_dir{ "" };
-		std::string ul_file_dir{ "" };
-		std::string cpp_file_dir{ "" };
-		std::string c_file_dir{ "" };
-		std::string python_dir{ "" };
+		classes::stringi8 llvm_file_dir{ "" };
+		classes::stringi8 ul_file_dir{ "" };
+		classes::stringi8 cpp_file_dir{ "" };
+		classes::stringi8 c_file_dir{ "" };
+		classes::stringi8 python_dir{ "" };
 		language_directories();
 		language_directories(language_directories&&) noexcept;
 	};
@@ -42,20 +43,22 @@ namespace ul::utils
 	{
 	public:
 		std::unique_ptr<language_directories> directories = std::make_unique<language_directories>();
+		classes::stringi8  additional_cmd_information{ "" };
 
 		file_module(const file_module&) = delete;
 		file_module& operator=(const file_module&) = delete;
 		file_module(file_module&& rhs) noexcept;
 		file_module();
 
-		detail::python_compile_strings reveal_python();
-		void set_cpp_file(std::string file) const noexcept;
-		void set_c_file(std::string file) const noexcept ;
-		void set_python_file(std::string file) const noexcept;
-		void set_llvm_file(std::string file) const noexcept;
-		std::string cpp_file();
-		std::string c_file();
-		std::string python_file();
-		std::string llvm_file();
+		detail::python_compile_strings reveal_python() const;
+		void set_cpp_file( classes::stringi8  file) const noexcept;
+		void set_c_file( classes::stringi8  file) const noexcept ;
+		void set_python_file( classes::stringi8  file) const noexcept;
+		void set_llvm_file( classes::stringi8  file) const noexcept;
+		void append_cmd_information( classes::stringi8  cmd) noexcept;
+		classes::stringi8  cpp_file();
+		classes::stringi8  c_file();
+		classes::stringi8  python_file();
+		classes::stringi8  llvm_file();
 	};
 }

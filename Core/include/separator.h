@@ -1,5 +1,6 @@
 #pragma once
-#include <string>
+#include <ulstring.h>
+
 namespace ul::utils
 {
 	constexpr int without_char = 0;
@@ -8,9 +9,9 @@ namespace ul::utils
 	{
 	private:
 		// These separators will be kept
-		std::string keep_sep_;
+		classes::stringi8 keep_sep_;
 		// These separators won't be kept
-		std::string out_sep_;
+		classes::stringi8 out_sep_;
 	public:
 		template<typename StringTypeF, typename StringTypeS>
 		separator(StringTypeF&& out_separator, StringTypeS&& keep_separator) :

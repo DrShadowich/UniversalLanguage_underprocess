@@ -12,7 +12,8 @@ namespace ul::codegen
 
 	struct generator_context
 	{
-		std::string left_buffer_string{ "" };
+		utils::classes::stringi8 left_buffer_string{ "" };
+		utils::classes::stringi8 return_type_str{ "" };
 		llvm::Value* left_buffer = nullptr;
 		llvm::BasicBlock* global_space = nullptr;
 		llvm::BasicBlock* if_statement_space = nullptr;
@@ -55,7 +56,7 @@ namespace ul::codegen
 
 		llvm_union generate_expression(expr::expr_node_ptr expr);
 		llvm_union generate_statement(stmt::statement_ptr stmt);
-		llvm_aligned_type get_aligned_type(const std::string& name);
+		llvm_aligned_type get_aligned_type(const utils::classes::stringi8& name);
 		
 
 		std::pair<llvm::Value*, llvm::Value*> get_binary_ops_operands(expr::expr_node_ptr first, expr::expr_node_ptr second);

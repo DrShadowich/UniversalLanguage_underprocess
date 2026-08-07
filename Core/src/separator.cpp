@@ -10,10 +10,10 @@ namespace ul::utils
 	char separator::check_symbol(char symbol)
 	{
 		size_t pos = out_sep_.find_first_of(symbol);
-		if (pos == std::string::npos)
+		if (pos == classes::stringi8::npos)
 		{
 			pos = keep_sep_.find_first_of(symbol);
-			if (pos == std::string::npos) return no_char;
+			if (pos == classes::stringi8::npos) return no_char;
 			else return symbol;
 		}
 		return without_char;

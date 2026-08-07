@@ -5,12 +5,12 @@
 
 namespace ul::parser
 {
-	std::string function_name_info::get_name(const std::string& name)
+	utils::classes::stringi8 function_name_info::get_name(const utils::classes::stringi8& name)
 	{
 		if (name.empty())
 			PARSER_EXCEPTION("Expected name");
 		size_t pos = name.find_first_of('$');
-		std::string ret_value = std::move(name.substr(0, pos));
+		utils::classes::stringi8 ret_value = std::move(name.substr(0, pos));
 		if (ret_value.empty())
 			PARSER_EXCEPTION("Got empty name");
 		return ret_value;
@@ -31,9 +31,9 @@ namespace ul::parser
 		fn_calle.function->name->full_name = std::move(fni.get_full_name());
 	}
 
-	std::string function_name_info::get_full_name()
+	utils::classes::stringi8 function_name_info::get_full_name()
 	{
-		std::string full_name = std::format("{}$|{}", fn_name, fn_type);
+		utils::classes::stringi8 full_name = std::format("{}$|{}", fn_name, fn_type);
 		for (auto&& type_str : fn_types)
 			full_name += std::format("|{}", type_str);
 		full_name.push_back('!');
@@ -51,7 +51,7 @@ namespace ul::parser
 		fn_def.function->name->full_name += std::move(std::format("{}$|{}", fn_name, fn_type));
 		for (auto&& type_str : fn_def.parameters->names)
 		{
-			auto type = utils::get_type_from_name(type_str);
+			auto type = type_str.get_type_from_name();
 			fn_types.push_back(type);
 			fn_def.function->name->full_name += std::move(std::format("|{}", std::move(type)));
 		}
@@ -69,12 +69,12 @@ namespace ul::parser
 	{
 		this->inname(fn_def);
 	}
-	function_name_info::function_name_info(std::string full_name)
+	function_name_info::function_name_info(utils::classes::stringi8 full_name)
 	{
 		size_t func_name_end_symbol_pos = full_name.find_first_of('$');
 		fn_name = std::move(full_name.substr(0, func_name_end_symbol_pos));
-		std::string types = full_name.substr(func_name_end_symbol_pos + 2, full_name.size());
-		std::string type;
+		utils::classes::stringi8 types = full_name.substr(func_name_end_symbol_pos + 2, full_name.size());
+		utils::classes::stringi8 type;
 		size_t return_type_pos = types.find_first_of('|');
 		if (!return_type_pos)
 			fn_type = "";
@@ -121,7 +121,7 @@ namespace ul::parser
 		is_extern = rhs.is_extern;
 		return *this;
 	}
-	bool function_name_info::operator==(const std::string& full_name)
+	bool function_name_info::operator==(const utils::classes::stringi8& full_name)
 	{
 		return this->get_full_name() == full_name;
 	}
@@ -133,7 +133,7 @@ namespace ul::parser
 	{
 		return get_full_name() == fn_def.function->name->full_name;
 	}
-	function_name_info::operator std::string()
+	function_name_info::operator utils::classes::stringi8()
 	{
 		return this->get_full_name();
 	}

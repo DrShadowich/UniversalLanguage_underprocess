@@ -39,14 +39,14 @@ namespace ul::codegen
 			return nullptr;
 	}
 
-	detail::trio_blocks make_then_blocks(llvm::LLVMContext& ctx, llvm::Function* parent, std::string name)
+	detail::trio_blocks make_then_blocks(llvm::LLVMContext& ctx, llvm::Function* parent, utils::classes::stringi8 name)
 	{
 		return { llvm::BasicBlock::Create(ctx, name + "_then", parent),
 		llvm::BasicBlock::Create(ctx, name + "_else", parent),
 		llvm::BasicBlock::Create(ctx, name + "_merge", parent)};
 	}
 
-	llvm::Value* create_string(llvm::Module& mod_, llvm::IRBuilder<>& builder, llvm::LLVMContext& ctx, std::string cpp_string)
+	llvm::Value* create_string(llvm::Module& mod_, llvm::IRBuilder<>& builder, llvm::LLVMContext& ctx, utils::classes::stringi8 cpp_string)
 	{
 		auto str_type = llvm::ArrayType::get(llvm::Type::getInt8Ty(ctx), cpp_string.size() + 1);
 		auto str_init = llvm::ConstantDataArray::getString(ctx, cpp_string);

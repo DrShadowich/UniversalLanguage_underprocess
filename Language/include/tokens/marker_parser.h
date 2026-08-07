@@ -12,6 +12,6 @@ namespace ul::parser
 	private:
 		static inline const std::regex marker_regex = std::regex(R"(%(\w*)([\w\S\s]*?)%(\w*))");
 	public:
-		stmt::marker_statement_ptr parse_marker(std::string marker_lexeme);
+		stmt::marker_statement_ptr parse_marker(utils::classes::stringi8 marker_lexeme);
 	};
 }

@@ -42,12 +42,12 @@ void CODEGEN code_generator::sub_depth()
 {
 	--names_table_;
 }
-CODEGEN llvm_aligned_type CODEGEN code_generator::get_aligned_type(const std::string& name)
+CODEGEN llvm_aligned_type CODEGEN code_generator::get_aligned_type(const utils::classes::stringi8& name)
 {
 	llvm_aligned_type atype{};
 	if (name.empty())
 		CODE_GENERATOR_EXCEPTION("Type was empty string");
-	std::string type_str = utils::get_type_from_name(name);
+	utils::classes::stringi8 type_str = name.get_type_from_name();
 	if (!names_table_.contains_type(name))
 		atype.type = dictionaries::ul_llvm_type_table.at(type_str)(ctx_);
 	else CODE_GENERATOR_EXCEPTION(std::format("Type {} doesn\'t exsist", type_str));
@@ -103,27 +103,29 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 	}
 	else if(auto* n = ul::dyn_cast<stmt::marker_statement>(stmtp))
 	{
-		namespace fs = std::filesystem;
+		bool in_function = gctx_->current_function_space != nullptr;
+		
 		switch(n->marker_type)
 		{
 		case token::TID::CONFIG_MARKER:
 		{
+			
 			marker_generator_.generate_config(std::move(n->body));
 			return universal_answer;;
 		}
 		case token::TID::PYTHON_MARKER:
 		{
-			marker_generator_.generate_python_code(std::move(n->body));
+			marker_generator_.generate_python_code(std::move(n->body), in_function);
 			return universal_answer;
 		}
 		case token::TID::CPP_MARKER:
 		{
-			marker_generator_.generate_cpp_code(std::move(n->body));
+			marker_generator_.generate_cpp_code(std::move(n->body), in_function);
 			return universal_answer;
 		}
 		case token::TID::C_MARKER:
 		{
-			marker_generator_.generate_c_code(std::move(n->body));
+			marker_generator_.generate_c_code(std::move(n->body), in_function);
 			return universal_answer;
 		}
 		default:
@@ -223,6 +225,13 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 		gctx_->if_statement_space = std::move(merge_bb);
 
 		auto* boolean_condition = generate_expression(std::move(n->condition)).value;
+		if(boolean_condition->hasName() && typeof(boolean_condition)->isFunctionTy() && gctx_->return_type_str != "bool")
+		{
+			if(typeof(boolean_condition)->isIntegerTy())
+				boolean_condition = builder_.CreateICmpNE(boolean_condition, llvm::ConstantInt::get(llvm::Type::getInt32Ty(ctx_), 0), "iN -> i1");
+			else
+				boolean_condition = builder_.CreateFCmpONE(boolean_condition, llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx_), 0), "iN -> i1");
+		}
 		builder_.CreateCondBr(boolean_condition, then_bb, else_bb);
 		// true
 		builder_.SetInsertPoint(then_bb);
@@ -252,8 +261,8 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 	}
 	else if (auto* n = ul::dyn_cast<stmt::block_statement>(stmtp))
 	{
-		std::string in_bb_name = std::to_string(++gctx_->inner_block);
-		std::string exit_bb_name = std::to_string(gctx_->inner_block) + " exit";
+		utils::classes::stringi8 in_bb_name = std::to_string(++gctx_->inner_block);
+		utils::classes::stringi8 exit_bb_name = std::to_string(gctx_->inner_block) + " exit";
 		add_depth();
 		if (!gctx_->is_named_statement)
 		{
@@ -312,6 +321,11 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 		gctx_->is_named_statement = false;
 		return universal_answer;
 	}
+	else if (auto* n = ul::dyn_cast<stmt::end_of_block_statement>(stmtp))
+	{
+		for (auto&& after_expr : n->after_expressions)
+			generate_expression(std::move(after_expr));
+	}
 	else
 		CODE_GENERATOR_EXCEPTION("Unhandled statement type in code generator");
 }
@@ -319,9 +333,13 @@ CODEGEN llvm_union CODEGEN code_generator::generate_statement(stmt::statement_pt
 std::pair<llvm::Value*, llvm::Value*> CODEGEN code_generator::get_binary_ops_operands(expr::expr_node_ptr first, expr::expr_node_ptr second)
 {
 	llvm::Value* left = generate_expression(std::move(first)).value;
+	
+	gctx_->left_buffer_string = left->getName().str();
 	gctx_->left_buffer = left;
 	llvm::Value* right = generate_expression(std::move(second)).value;
 	gctx_->left_buffer = nullptr;
+	gctx_->left_buffer_string = "";
+
 	llvm::Value* left_operand{ nullptr };
 	llvm::Value* right_operand{ nullptr };
 	if (any_is_pointer(left, right) == left)
@@ -452,6 +470,11 @@ if (typeof(left_operand) != typeof(right_operand))\
 			CODE_GENERATOR_EXCEPTION("Unhandled unary operator type for basic unary expression");
 		}
 	}
+	else if(auto* n = ul::dyn_cast<expr::null_expr>(exprp))
+	{
+		universal_answer.value = llvm::ConstantPointerNull::get(llvm::Type::getInt8Ty(ctx_)->getPointerTo());
+		return universal_answer;
+	}
 	else if (auto* n = ul::dyn_cast<expr::break_node>(exprp))
 	{
 		if (gctx_->loop_spaces.empty())
@@ -459,46 +482,9 @@ if (typeof(left_operand) != typeof(right_operand))\
 		builder_.CreateBr(gctx_->loop_spaces.top());
 		gctx_->loop_spaces.pop();
 	}
-	else if (auto* n = ul::dyn_cast<expr::break_node>(exprp))
+	else if (auto* n = ul::dyn_cast<expr::continue_node>(exprp))
 	{
 		builder_.CreateBr(builder_.GetInsertBlock());
-	}
-	else if(auto* n = ul::dyn_cast<expr::dynamic_malloc_expr>(exprp))
-	{
-		//								 count						   size
-		std::vector<llvm::Type*> params{ llvm::Type::getInt64Ty(ctx_), llvm::Type::getInt64Ty(ctx_) };
-		auto* alloc_func_type = llvm::FunctionType::get(llvm::Type::getInt8Ty(ctx_)->getPointerTo(), params, false);
-		auto alloc_func = module_.getOrInsertFunction("__ul_allocate", alloc_func_type);
-		auto* rhs = generate_expression(std::move(n->rhs)).value;
-		std::vector<llvm::Value*> args{};
-		
-		if (gctx_->left_buffer_string.empty())
-			CODE_GENERATOR_EXCEPTION("Expected variable");
-
-		if (!n->is_single)
-		{
-			if (!typeof(rhs)->isIntegerTy())
-				CODE_GENERATOR_EXCEPTION("Expected number or integer in new");
-			
-			if(auto* constant = llvm::dyn_cast<llvm::ConstantInt>(rhs))
-			{
-				int64_t value = constant->getSExtValue();
-				args.emplace_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx_), value));
-			}
-			else
-				args.push_back(rhs);
-			auto size_of = module_.getDataLayout().getTypeAllocSize(names_table_.get_type(utils::get_type_from_name(gctx_->left_buffer_string)));
-			args.emplace_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx_), size_of));
-		}
-		else
-		{
-			args.emplace_back(llvm::ConstantInt::get(llvm::Type::getInt64Ty(ctx_), 1));
-			args.emplace_back(rhs);
-		}
-		
-		llvm::Value* call_inst = builder_.CreateCall(alloc_func, args, "new");
-		universal_answer.value = std::move(call_inst);
-		return universal_answer;
 	}
 	else if (auto* n = ul::dyn_cast<expr::nameof_expr>(exprp))
 	{
@@ -510,7 +496,7 @@ if (typeof(left_operand) != typeof(right_operand))\
 	else if(auto* n = ul::dyn_cast<expr::variable_additional_assignment_expr>(exprp))
 	{
 
-		std::string var_name = ul::dyn_cast<expr::variable_node>(n->left.get())->name;
+		utils::classes::stringi8 var_name = ul::dyn_cast<expr::variable_node>(n->left.get())->name;
 		auto* var = generate_expression(std::move(n->left)).value;
 		auto* var_ptr = names_table_.get_variable(var_name);
 		gctx_->left_buffer = var;
@@ -547,7 +533,7 @@ if (typeof(left_operand) != typeof(right_operand))\
 	else if (auto* n = ul::dyn_cast<expr::variable_assignment_expr>(exprp))
 	{
 		auto* lhsp = ul::dyn_cast<expr::variable_node>(n->left.get());
-		std::string var_name = lhsp->name;
+		utils::classes::stringi8 var_name = lhsp->name;
 		gctx_->left_buffer_string = var_name;
 		llvm::Value* rhs = generate_expression(std::move(n->right)).value;
 		gctx_->left_buffer_string = "";
@@ -627,11 +613,12 @@ if (typeof(left_operand) != typeof(right_operand))\
 		// Переделать
 		if (n->function->is_extern)
 		{
-			std::string new_short_name = utils::get_name_without_type(n->function->name->short_name);
+			utils::classes::stringi8 new_short_name = n->function->name->short_name.get_name_without_type();
 			n->function->name->full_name = new_short_name;
 			n->function->name->short_name = std::move(new_short_name);
 		}
 		llvm::Function* calling_func = names_table_.get_function(n->function->name->full_name);
+		gctx_->return_type_str = n->function_type->type_str;
 		auto calling_function =
 			module_.getOrInsertFunction(n->function->name->full_name, typeof(calling_func));
 		
@@ -671,11 +658,14 @@ if (typeof(left_operand) != typeof(right_operand))\
 			universal_answer.value = literal ? llvm::ConstantInt::getTrue(ctx_) : llvm::ConstantInt::getFalse(ctx_);
 		else
 		{
-			llvm::Type* type = gctx_->left_buffer ? 
-				typeof(gctx_->left_buffer) : 
-				not gctx_->left_buffer_string.empty() ?
-				names_table_.get_type(utils::get_type_from_name(gctx_->left_buffer_string)) :
-				llvm::Type::getIntNTy(ctx_, n->bit_count);
+			llvm::Type* type{};
+			if(gctx_->left_buffer && typeof(gctx_->left_buffer)->isIntegerTy())
+				type = typeof(gctx_->left_buffer);
+			else if (not gctx_->left_buffer_string.empty() && dictionaries::ul_llvm_type_to_int_table.contains(gctx_->left_buffer_string.get_type_from_name()))
+				type = names_table_.get_type(gctx_->left_buffer_string.get_type_from_name());
+			else
+				type = llvm::Type::getIntNTy(ctx_, n->bit_count);
+
 			universal_answer.value = llvm::ConstantInt::get(type, literal);
 		}
 		return universal_answer;
@@ -722,9 +712,17 @@ if (typeof(left_operand) != typeof(right_operand))\
 				builder_.CreateStore(argument, return_value);
 				names_table_.insert(n->name, return_value);
 			}
-			universal_answer.value =
-				llvm::cast<llvm::Value>
-				(builder_.CreateAlignedLoad(llvm_type.type, names_table_.get_variable(n->name), llvm_type.align, n->name));
+			if(n->name.get_type_from_name() == "ptr" || n->name.get_type_from_name() == "str")
+			{
+				universal_answer.value = names_table_.get_variable(n->name);
+			}
+			else 
+			{
+				universal_answer.value =
+					llvm::cast<llvm::Value>
+					(builder_.CreateAlignedLoad(llvm_type.type, names_table_.get_variable(n->name), llvm_type.align, n->name));
+			}
+
 		}
 		return universal_answer;
 	}
@@ -749,7 +747,7 @@ if (typeof(left_operand) != typeof(right_operand))\
 			);
 		if (n->function->name->short_name == "main_fn" || n->function->is_extern)
 		{
-			std::string new_short_name = utils::get_name_without_type(n->function->name->short_name);
+			utils::classes::stringi8 new_short_name = n->function->name->short_name.get_name_without_type();
 			n->function->name->full_name = new_short_name;
 			n->function->name->short_name = std::move(new_short_name);
 		}

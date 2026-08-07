@@ -1,6 +1,7 @@
 #pragma once
 #include <stdexcept>
 #include <format>
+#include <ulstring.h>
 /*
 * Universal Language lexer, parser, code gen exceptions
 */
@@ -23,7 +24,7 @@ namespace ul::ex
 	class exception : public std::exception
 	{
 	protected:
-		std::string message_{};
+		utils::classes::stringi8 message_{};
 		size_t code_line_{};
 		const char* file_name_{};
 		const char* function_name_{};
@@ -62,7 +63,7 @@ namespace ul::ex
 		uint64_t file_code_col_{ 0 };
 	public:
 		using ULEX exception::exception;
-		explicit parser_exception(std::string msg, std::string file_name, std::pair<uint64_t, uint64_t> col_and_row);
+		explicit parser_exception(utils::classes::stringi8 msg, utils::classes::stringi8 file_name, std::pair<uint64_t, uint64_t> col_and_row);
 	protected:
 		virtual void native_string() override;
 	};

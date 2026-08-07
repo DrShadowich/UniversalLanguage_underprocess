@@ -4,9 +4,9 @@
 namespace ul::parser
 {
 
-	void function_names_memory::set_functions_return_type(std::string* fn_name, const std::string& fn_type)
+	void function_names_memory::set_functions_return_type(utils::classes::stringi8* fn_name, const utils::classes::stringi8& fn_type)
 	{
-		std::string fn_short_name = std::move(function_name_info::get_name(*fn_name));
+		utils::classes::stringi8 fn_short_name = std::move(function_name_info::get_name(*fn_name));
 		if (!function_names.contains(fn_short_name))
 			PARSER_EXCEPTION(std::format("There\'s no function named ", fn_short_name));
 		for(auto& ofn : function_names[fn_short_name])
@@ -33,7 +33,7 @@ namespace ul::parser
 
 		if (!function_names.contains(info.fn_name))
 		{
-			std::string name_ = info.fn_name;
+			utils::classes::stringi8 name_ = info.fn_name;
 			std::vector<function_name_info> vec;
 			vec.emplace_back(std::move(info));
 			function_names.insert({ std::move(name_), std::move(vec)});
@@ -43,9 +43,9 @@ namespace ul::parser
 		return name;
 	}
 	
-	std::vector<std::string> function_names_memory::get_function(const std::string& fn_name)
+	std::vector<utils::classes::stringi8> function_names_memory::get_function(const utils::classes::stringi8& fn_name)
 	{
-		std::vector<std::string> ret_vec;
+		std::vector<utils::classes::stringi8> ret_vec;
 		for(auto&& ofn : function_names[fn_name])
 		{
 			ret_vec.push_back(ofn);
@@ -53,14 +53,14 @@ namespace ul::parser
 		return ret_vec;
 	}
 
-	bool function_names_memory::contains_name(const std::string& fn_name)
+	bool function_names_memory::contains_name(const utils::classes::stringi8& fn_name)
 	{
 		return function_names.contains(fn_name);
 	}
 
-	std::string function_names_memory::get_return_type_of_function(const std::string& fn_name)
+	utils::classes::stringi8 function_names_memory::get_return_type_of_function(const utils::classes::stringi8& fn_name)
 	{
-		std::string prev_fn_type{ function_names[fn_name][0].fn_type };
+		utils::classes::stringi8 prev_fn_type{ function_names[fn_name][0].fn_type };
 		for(auto&& fn : function_names[fn_name])
 		{
 			if (prev_fn_type != fn.fn_type)
@@ -70,7 +70,7 @@ namespace ul::parser
 		return prev_fn_type;
 	}
 
-	bool function_names_memory::name_is_extern(const std::string& fn_name)
+	bool function_names_memory::name_is_extern(const utils::classes::stringi8& fn_name)
 	{
 		bool prev_flag = function_names[fn_name][0].is_extern;
 		for(auto&& fn : function_names[fn_name])

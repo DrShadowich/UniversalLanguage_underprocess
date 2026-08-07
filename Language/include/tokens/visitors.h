@@ -6,7 +6,7 @@
 #include <format>
 #include <core_exceptions.h>
 #include <visitors.h>
-#include <simple_variable.h>
+
 #if 0
 struct visitor
 {
@@ -22,12 +22,12 @@ struct make_ptr_visitor : public visitor
 template<typename NodeType>
 struct output_visitor : public visitor
 {
-	virtual std::string visit(NodeType&) = 0;
+	virtual utils::classes::stringi8 visit(NodeType&) = 0;
 };
 
 struct expr_type_visitor : public visitor
 {
-	static std::string get_type(ul::expr::expr_node& exp)
+	static utils::classes::stringi8 get_type(ul::expr::expr_node& exp)
 	{
 		if (auto* n = dynamic_cast<ul::expr::string_literal_node*>(&exp))
 		{
@@ -48,7 +48,7 @@ struct expr_type_visitor : public visitor
 
 struct expr_output_visitor : public output_visitor<ul::expr::expr_node>
 {
-	virtual std::string visit(ul::expr::expr_node& ep) override
+	virtual utils::classes::stringi8 visit(ul::expr::expr_node& ep) override
 	{
 		using namespace ul::expr;
 		if (auto* n = dynamic_cast<binary_operator_node*>(&ep))
@@ -81,7 +81,7 @@ struct expr_output_visitor : public output_visitor<ul::expr::expr_node>
 		}
 		else if (auto* n = dynamic_cast<function_arguments_node*>(&ep))
 		{
-			std::string args;
+			utils::classes::stringi8 args;
 			for (size_t size{ 0 }; size < n->args.size(); ++size)
 			{
 				args += n->args.size() - size == 1 ? std::format("{}", visit(*n->args[size])) : std::format("{}, ", visit(*n->args[size]));
@@ -103,7 +103,7 @@ struct expr_output_visitor : public output_visitor<ul::expr::expr_node>
 
 struct stmt_output_visitor : public output_visitor<ul::stmt::statement>
 {
-	virtual std::string visit(ul::stmt::statement& st) override 
+	virtual utils::classes::stringi8 visit(ul::stmt::statement& st) override 
 	{
 		using namespace ul::expr;
 		using namespace ul::stmt;
@@ -118,7 +118,7 @@ struct stmt_output_visitor : public output_visitor<ul::stmt::statement>
 		}
 		else if (auto* n = dynamic_cast<block_statement*>(&st))
 		{
-			std::string res = "{ ";
+			utils::classes::stringi8 res = "{ ";
 			for (auto&& stmt : n->statements)
 			{
 				res += visit(*stmt) + ';';

@@ -1,6 +1,6 @@
 #include <commander.h>
 #include <fstream>
-#include <commentaries.h>
+
 #include <core_exceptions.h>
 #include <iostream>
 #include <parser.h>
@@ -16,9 +16,9 @@ cmd::commander::commander(int argc, char** argv) :
 		commands_.emplace_back(argv[i]);
 }
 
-std::string cmd::commander_context::cmd_reveal_USL(bool python_used)
+ul::utils::classes::stringi8 cmd::commander_context::cmd_reveal_USL(bool python_used)
 {
-	std::string cmd_result;
+	ul::utils::classes::stringi8 cmd_result;
 	cmd_result += USL_path + "\\USL.cpp ";
 	if(python_used)
 		cmd_result += USL_path + "\\py_ul.cpp ";
@@ -32,7 +32,7 @@ void cmd::commander::execute_commands()
 	bool output_file_chosen = false;
 	if (commands_.empty())
 	{
-		std::cout << "------------------\nUniversal Language\n------------------";
+		std::cout << "------------------\nUniversal Language\n------------------\n";
 		std::cout << "> Supported commands:\n";
 		std::cout << "> -o -> set output file.\n";
 		std::cout << "> any .ul file -> add .ul file for compilation.\n";
@@ -53,18 +53,19 @@ void cmd::commander::execute_commands()
 			if (output_file_chosen)
 				COMMANDER_EXCEPTION("Output file already set");
 			output_file_name_ = std::move(com);
+			output_file_chosen = true;
 		}
-		else if (end_with(".ul", com))
+		else if (com.end_with(".ul"))
 		{
 			ul_files_.emplace(std::move(com));
 		}
-		else if(end_with(".cpp", com))
+		else if(com.end_with(".cpp"))
 		{
 			other_files_.emplace(std::move(com));
 		}
-		else if(starts_with("-O", com))
+		else if(com.starts_with("-O"))
 		{
-			std::string level = com.substr(com.find_first_of("-O"), com.size());
+			ul::utils::classes::stringi8 level = com.substr(2);
 			for (char s : level)
 				if (!isdigit(s))
 					COMMANDER_EXCEPTION("Optimizations level isn\'t number");
@@ -90,10 +91,21 @@ void cmd::commander::execute_commands()
 
 	bool python_used = false;
 	bool native_c_used = false;
-	std::string ll_files;
-	std::string additional_information;
-	std::string native_comp = std::format("{}.exe -c", cctx_->clang_path);
+	ul::utils::classes::stringi8 ll_files;
+	ul::utils::classes::stringi8 additional_information;
+	ul::utils::classes::stringi8 native_information;
+	
+	ul::utils::classes::stringi8 native_comp = std::format("{}.exe -c", cctx_->clang_path);
 
+	fs::path output_file{};
+	fs::path output_dir{};
+	if (output_file_chosen)
+	{
+		output_file = fs::path(static_cast<const std::string&>(output_file_name_));
+		output_dir = output_file.parent_path();
+	}
+	else
+		output_dir = fs::current_path();
 
 	for (auto&& mod : file_modules_)
 	{
@@ -101,44 +113,85 @@ void cmd::commander::execute_commands()
 		{
 			python_used = true;
 			auto py_dirs = mod.reveal_python();
+			auto libs = py_dirs.python_libs.uncover_this_with('\"').make_path(); 
+			auto dll = py_dirs.python_dll.uncover_this_with('\"').make_path(); 
+
 			additional_information += std::format(" -I{} -L{} -l{}", py_dirs.python_include, py_dirs.python_libs, py_dirs.python_lib);
-			auto dll = fs::path(py_dirs.python_dll.substr(1, py_dirs.python_dll.size() - 2));
-			auto libs = fs::path(py_dirs.python_libs.substr(1, py_dirs.python_libs.size() - 2));
-			if(not fs::exists(libs))
-				fs::copy(dll, fs::current_path(), fs::copy_options::overwrite_existing);
-			if(not fs::exists(dll))
-				fs::copy(libs, fs::current_path() / "Lib", fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+			
+			if (not fs::exists(output_dir))
+				fs::create_directory(output_dir);
+			if (not fs::exists(output_dir / "Lib"))
+				fs::create_directory(output_dir / "Lib");
+			if (not fs::exists(output_dir / "DLLs"))
+				fs::create_directory(output_dir / "DLLs");
+
+			std::cout << std::format("> ul: Copying {} in {}\n", dll.filename().string(), output_dir.string());
+			fs::copy(dll, output_dir, fs::copy_options::skip_existing);
+
+
+			std::cout << std::format("> ul: Copying Python Libs in {}\n", (output_dir / "Lib").string());
+			fs::copy(libs, output_dir / "Lib", fs::copy_options::skip_existing | fs::copy_options::recursive);
+
+			std::cout << std::format("> ul: Copying Python DLLs in {}\n", (output_dir / "DLLs").string());
+			fs::copy(py_dirs.python_dlls.uncover_this_with('\"').make_path(), output_dir / "DLLs", fs::copy_options::skip_existing | fs::copy_options::recursive);
+
 		}
+		fs::create_directory(output_dir / "rest");
 		if (not mod.cpp_file().empty())
+		{
+			std::cout << std::format("{} file was copied on {}\n", mod.cpp_file(), (output_dir / "rest").string());
+			fs::copy(mod.cpp_file().make_path(), (output_dir / "rest" / mod.cpp_file().make_path().filename()), fs::copy_options::overwrite_existing);
+			
 			other_files_.emplace(std::move(mod.cpp_file()));
+		}
 		if (not mod.c_file().empty())
 		{
 			native_c_used = true;
+			
+			std::cout << std::format("{} file was copied on {}\n", mod.c_file(), (output_dir / "rest").string());
+			fs::copy(mod.c_file().make_path(), (output_dir / "rest" / mod.c_file().make_path().filename()), fs::copy_options::overwrite_existing);
+			
 			native_comp += std::format(" \"{}\"", mod.c_file());
 		}
 		if(not mod.llvm_file().empty())
 		{
+			std::cout << std::format("{} file was copied on {}\n", mod.llvm_file(), (output_dir / "rest").string());
+			fs::copy(mod.llvm_file().make_path(), (output_dir / "rest" / mod.llvm_file().make_path().filename()), fs::copy_options::overwrite_existing);
+
 			ll_files += std::format(" \"{}\"", mod.llvm_file());
 		}
+		if (not mod.additional_cmd_information.empty())
+		{
+			additional_information += std::format(" {}", mod.additional_cmd_information);
+			native_information += std::format(" {}", mod.additional_cmd_information);
+		}
 	}
-	std::string other_files;
+	ul::utils::classes::stringi8 other_files;
 	for(auto&& file : other_files_)
 	{
 		other_files += std::format(" \"{}\"", file);
 	}
 
-	std::string native_obj_file_name = "native_c.obj";
+	ul::utils::classes::stringi8 native_obj_file_name = "native_c.obj";
+
+	additional_information += " -w ";
+	native_information += " -w ";
+	additional_information += std::format(" -static -L\"{}\"", (fs::current_path() / "CppLibs").string());
+	additional_information += " -luser32.lib ";
+	native_information += " -luser32.lib ";
 
 	if(native_c_used)
 	{
-		native_comp += std::format(" -o \"{}\"", native_obj_file_name);
+		native_comp += std::format(" {} -o \"{}\"", native_information, native_obj_file_name);
 		cmd::start_clang(std::move(native_comp));
 	}
 
-	std::string output_comp = 
+	// Windows specific
+
+	ul::utils::classes::stringi8 output_comp = 
 		std::format
-		(//  1					   2  3  4  5  6  7     8
-			"{}++.exe -std=c++20 -O{} {} {} {} {} {} -o {} -Woverride-module", 
+		(//  1						2  3  4  5  6  7     8
+			"{}++.exe -std=c++20 -O{} {} {} {} {} {} -o {} ", 
 		 	cctx_->clang_path, // 1
 			optimization_level_, // 2
 			other_files, // 3
@@ -154,7 +207,7 @@ void cmd::commander::execute_commands()
 	return;
 }
 
-std::set<std::string> cmd::commander::get_ul_files()
+std::set<ul::utils::classes::stringi8> cmd::commander::get_ul_files()
 {
 	return ul_files_;
 }
@@ -177,11 +230,11 @@ void cmd::commander::write_llvm_module(llvm::Module& M, llvm::StringRef Path)
 	OS.flush();
 }
 
-void cmd::commander::compile_ul_files(std::string file_name)
+void cmd::commander::compile_ul_files(ul::utils::classes::stringi8 file_name)
 {
-	std::string module_name = file_name.substr(0, file_name.find_first_of(".ul"));
+	ul::utils::classes::stringi8 module_name = file_name.substr(0, file_name.find_first_of(".ul"));
 	std::ifstream file{ file_name };
-	std::string input{ std::istreambuf_iterator<char>{ file.rdbuf() }, std::istreambuf_iterator<char>{ } };
+	ul::utils::classes::stringi8 input{ std::istreambuf_iterator<char>{ file.rdbuf() }, std::istreambuf_iterator<char>{ } };
 	
 	llvm::LLVMContext ctx{};
 	llvm::Module module_{ module_name, ctx};

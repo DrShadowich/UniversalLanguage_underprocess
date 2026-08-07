@@ -1,6 +1,7 @@
 #pragma once
 #define enum_to_string(x)	#x
 #include <memory>
+#include <ulstring.h>
 #include <regex>
 namespace ul::token
 {
@@ -85,6 +86,8 @@ namespace ul::token
 		KEYWORD_CASE,
 		// default
 		KEYWORD_DEFAULT,
+		// nil
+		KEYWORD_NULL,
 		// break
 		KEYWORD_BREAK,
 		// continue
@@ -167,7 +170,7 @@ namespace ul::token
 
 	struct token_type
 	{
-		std::unique_ptr<std::string> token_pattern{};
+		std::unique_ptr<utils::classes::stringi8> token_pattern{};
 		std::unique_ptr<std::regex> regex_token_pattern{};
 		const char* enum_type_string{};
 		TID enum_type{};
@@ -176,7 +179,7 @@ namespace ul::token
 		token_type();
 		token_type(const token_type& rhs);
 		token_type(token_type&& rhs) noexcept;
-		explicit token_type(TID token_type_, const char* type_str, std::string pattern);
+		explicit token_type(TID token_type_, const char* type_str, utils::classes::stringi8 pattern);
 		explicit token_type(TID token_type_, const char* type_str, std::regex pattern);
 		token_type& operator=(const token_type& rhs);
 		token_type& operator=(token_type&& rhs) noexcept;

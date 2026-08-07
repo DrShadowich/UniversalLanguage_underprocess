@@ -19,9 +19,9 @@ namespace ul::stmt
 
 	struct assignment_statement : public statement
 	{
-		std::string variable_name;
+		utils::classes::stringi8 variable_name;
 		expr::expr_node_ptr rhs_value;
-		assignment_statement(std::string value_name, expr::expr_node_ptr expr_rhs) :
+		assignment_statement(utils::classes::stringi8 value_name, expr::expr_node_ptr expr_rhs) :
 			variable_name{ std::move(value_name) }, rhs_value{ std::move(expr_rhs) }
 		{}
 	};
@@ -57,11 +57,11 @@ namespace ul::stmt
 	struct return_statement : public statement
 	{
 		expr::expr_node_ptr return_expression;
-		std::string type_str;
+		utils::classes::stringi8 type_str;
 		explicit return_statement(expr::expr_node_ptr re) :
 			return_expression{ std::move(re) }
 		{}
-		explicit return_statement(expr::expr_node_ptr e, std::string return_type) :
+		explicit return_statement(expr::expr_node_ptr e, utils::classes::stringi8 return_type) :
 			return_expression{ std::move(e) }, type_str{ std::move(return_type) }
 		{}
 	};
@@ -167,25 +167,31 @@ namespace ul::stmt
 
 	struct insert_statement : public statement
 	{
-		std::string file_name;
-		explicit insert_statement(std::string filen) :
+		utils::classes::stringi8 file_name;
+		explicit insert_statement(utils::classes::stringi8 filen) :
 			file_name{ std::move(filen) }
 		{}
 	};
 	using insert_statement_ptr = std::unique_ptr<insert_statement>;
 	struct marker_statement : public statement
 	{
-		std::string header;
-		std::string body;
-		std::string footer;
+		utils::classes::stringi8 header;
+		utils::classes::stringi8 body;
+		utils::classes::stringi8 footer;
 		ul::token::TID marker_type;
-		explicit marker_statement(std::string head, std::string bod, std::string foot, ul::token::TID mid) :
+		explicit marker_statement(utils::classes::stringi8 head, utils::classes::stringi8 bod, utils::classes::stringi8 foot, ul::token::TID mid) :
 			header{ std::move(head) }, body{ std::move(bod) }, footer{ std::move(foot) }, marker_type{ mid }
 		{}
 	};
 	using marker_statement_ptr = std::unique_ptr<marker_statement>;
 
-	struct end_of_block_statement : public statement{};
+	struct end_of_block_statement : public statement
+	{
+		std::vector<expr::expr_node_ptr> after_expressions;
+		explicit end_of_block_statement(std::vector<expr::expr_node_ptr> after_exprs = {}) :
+			after_expressions{ std::move(after_exprs) }
+		{}
+	};
 
 	else_statement_ptr reverse_if_statements_list(else_statement_ptr root);
 }

@@ -13,14 +13,15 @@ namespace ul::parser
 {
 	struct parser_context
 	{
-		std::string last_expression_lexemes{};
+		utils::classes::stringi8 last_expression_lexemes{};
 		expr::function_definition_node* current_function{ nullptr };
-		std::unordered_map<std::string, uint32_t> current_names{};
+		std::unordered_map<utils::classes::stringi8, uint32_t> current_names{};
 		bool in_function = false;
 		bool in_if_statement = false;
 		uint32_t loop_depth{ 0 };
 		uint32_t block_depth{ 0 };
 		uint32_t bracket_depth{ 0 };
+		std::vector<expr::expr_node_ptr> end_expressions{};
 		parser_context()
 		{}
 	};

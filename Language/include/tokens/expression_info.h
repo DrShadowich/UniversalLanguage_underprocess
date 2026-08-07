@@ -1,6 +1,6 @@
 #pragma once
 #include <token_info.h>
-#include <simple_variable.h>
+
 #include <source_location_ul.h>
 #include <memory>
 #include <lexer.h>
@@ -12,17 +12,17 @@ namespace ul::expr
 		struct name_info
 		{
 			// full name from function_name_info
-			std::string full_name;
+			utils::classes::stringi8 full_name;
 			// only name
-			std::string short_name;
+			utils::classes::stringi8 short_name;
 			// return type
-			std::string type_str;
-			name_info() noexcept(std::is_nothrow_constructible_v<std::string>);
-			name_info(std::string f, std::string s, std::string t) noexcept(std::is_nothrow_constructible_v<std::string, std::string&&>);
-			name_info(std::string s) noexcept(std::is_nothrow_constructible_v<std::string>);
+			utils::classes::stringi8 type_str;
+			name_info() noexcept;
+			name_info(utils::classes::stringi8 f, utils::classes::stringi8 s, utils::classes::stringi8 t) noexcept;
+			name_info(utils::classes::stringi8 s) noexcept;
 			name_info(name_info&& rhs) noexcept;
-			void rename(const std::string& new_name);
-			operator std::string() { return full_name; }
+			void rename(const utils::classes::stringi8& new_name);
+			operator utils::classes::stringi8() { return full_name; }
 		};
 		using name_info_ptr = std::unique_ptr<name_info>;
 	}
@@ -36,26 +36,26 @@ namespace ul::expr
 
 	struct type_node : public expr_node
 	{
-		std::string type_str;
-		explicit type_node(std::string type_string);
+		utils::classes::stringi8 type_str;
+		explicit type_node(utils::classes::stringi8 type_string);
 	};
 	using type_node_ptr = std::unique_ptr<type_node>;
 
 	struct number_literal_node : public expr_node
 	{
-		std::string lexeme;
+		utils::classes::stringi8 lexeme;
 		// Переделай в enum
 		uint32_t bit_count;
-		explicit number_literal_node(std::string&& lexeme_, uint32_t bit_count_);
-		explicit number_literal_node(const std::string& lexeme_, uint32_t bit_count_);
+		explicit number_literal_node(utils::classes::stringi8&& lexeme_, uint32_t bit_count_);
+		explicit number_literal_node(const utils::classes::stringi8& lexeme_, uint32_t bit_count_);
 	};
 	using number_literal_node_ptr = std::unique_ptr<number_literal_node>;
 	
 	struct string_literal_node : public expr_node
 	{
-		std::string literal;
-		explicit string_literal_node(std::string&& lexeme_);
-		explicit string_literal_node(const std::string& lexeme_);
+		utils::classes::stringi8 literal;
+		explicit string_literal_node(utils::classes::stringi8&& lexeme_);
+		explicit string_literal_node(const utils::classes::stringi8& lexeme_);
 	};
 	using string_literal_node_ptr = std::unique_ptr<string_literal_node>;
 	
@@ -85,14 +85,14 @@ namespace ul::expr
 	// !!! DO NOT USE "named_node" AS INDEPENDENT NODE !!!
 	struct named_node : public expr_node
 	{
-		std::string name;
-		explicit named_node(std::string thing_name);
+		utils::classes::stringi8 name;
+		explicit named_node(utils::classes::stringi8 thing_name);
 	};
 	using named_node_ptr = std::unique_ptr<named_node>;
 
 	struct variable_node : public named_node
 	{
-		explicit variable_node(std::string variable);
+		explicit variable_node(utils::classes::stringi8 variable);
 	};
 	using variable_node_ptr = std::unique_ptr<variable_node>;
 
@@ -100,7 +100,7 @@ namespace ul::expr
 	{
 		explicit type_variable_node(variable_node* var_ptr);
 		explicit type_variable_node(variable_node_ptr var);
-		explicit type_variable_node(std::string variable);
+		explicit type_variable_node(utils::classes::stringi8 variable);
 	};
 	using type_variable_node_ptr = std::unique_ptr<type_variable_node>;
 
@@ -108,7 +108,7 @@ namespace ul::expr
 	{
 		bool is_extern = false;
 		detail::name_info_ptr name{ nullptr };
-		explicit function_node(std::string variable);
+		explicit function_node(utils::classes::stringi8 variable);
 	};
 	using function_node_ptr = std::unique_ptr<function_node>;
 
@@ -116,7 +116,7 @@ namespace ul::expr
 
 	struct function_parameters_node : public expr_node
 	{
-		std::vector<std::string> names;
+		std::vector<utils::classes::stringi8> names;
 		std::vector<expr::type_variable_node_ptr> types;
 		bool va_args = false;
 	};
@@ -126,10 +126,10 @@ namespace ul::expr
 	struct argument_node : public expr_node
 	{
 		expr_node_ptr value;
-		std::string type_str;
+		utils::classes::stringi8 type_str;
 		argument_node();
 		argument_node(argument_node&& rhs) noexcept;
-		explicit argument_node(expr_node_ptr value_, std::string argument_type_name);
+		explicit argument_node(expr_node_ptr value_, utils::classes::stringi8 argument_type_name);
 	};
 	using argument_node_ptr = std::unique_ptr<argument_node>;
 
@@ -215,14 +215,20 @@ namespace ul::expr
 		explicit dynamic_malloc_expr(expr::expr_node_ptr rhs, bool is_single);
 		explicit dynamic_malloc_expr(expr::expr_node_ptr rhs);
 	};
+	struct dynamic_free_expr : public expr_node
+	{
+		utils::classes::stringi8 variable_name;
+		explicit dynamic_free_expr(utils::classes::stringi8 var_name);
+	};
 
 	struct nameof_expr : public expr_node
 	{
 		variable_node_ptr variable;
 		explicit nameof_expr(variable_node_ptr var);
 	};
-
+	struct null_expr : public expr_node
+	{};
 	// Get type if expression is var, string lexeme, number lexeme.
-	std::string get_type_of_expression(expr_node& expression);
+	utils::classes::stringi8 get_type_of_expression(expr_node& expression);
 	expr::argument_node_ptr make_argument(expr_node_ptr expression);
 }

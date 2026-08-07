@@ -2,7 +2,7 @@
 #include <core_exceptions.h>
 namespace ul::dictionaries
 {
-	token::token_type language_dictionary::match_pattern(const std::string& lexeme)
+	token::token_type language_dictionary::match_pattern(const utils::classes::stringi8& lexeme)
 	{
 		bool state{ false };
 		for (auto&& tt : raw)
@@ -16,7 +16,7 @@ namespace ul::dictionaries
 		LEXER_EXCEPTION("Token didn\'t get any match");
 	}
 
-	std::smatch language_dictionary::search_pattern(const std::string& lexeme)
+	std::smatch language_dictionary::search_pattern(const utils::classes::stringi8& lexeme)
 	{
 		std::smatch match;
 		auto marker_regex = std::regex(R"(%(\w*)([\w\S\s]*?)%(\w*))");
